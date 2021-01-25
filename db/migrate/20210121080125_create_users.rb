@@ -7,6 +7,7 @@ class CreateUsers < ActiveRecord::Migration[6.1]
       t.string :last_name
       t.string :level
       t.string :gender
+      t.string :role, default: 'rower'
       t.boolean :enabled, default: false
       t.jsonb :bot_command_data, default: {}
 

@@ -21,8 +21,8 @@ module BotCommand
 
     protected
 
-    def send_message(text, options={})
-      @api.call('sendMessage', chat_id: @user.telegram_id, text: text)
+    def send_message(text, markup=nil, options={})
+      @api.call('sendMessage', chat_id: @user.telegram_id, text: text, reply_markup: markup)
     end
 
     def text

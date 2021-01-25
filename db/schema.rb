@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2021_01_21_080125) do
     t.string "last_name"
     t.string "level"
     t.string "gender"
+    t.string "role", default: "rower"
     t.boolean "enabled", default: false
     t.jsonb "bot_command_data", default: {}
     t.datetime "created_at", precision: 6, null: false

@@ -25,7 +25,7 @@ class WebhooksController < ApplicationController
 
   def register_user
     @user = User.find_or_initialize_by(telegram_id: from[:id])
-    @user.update(first_name: from[:first_name], last_name: from[:last_name])
+    @user.update(username: from[:username], first_name: from[:first_name], last_name: from[:last_name])
     @user
   end
 end
