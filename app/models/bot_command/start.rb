@@ -17,23 +17,28 @@ module BotCommand
         user.save
       elsif user.enabled?
         actions = ["/ver_entrenamientos", "/mis_entrenamientos"], ["/unirse_entrenamiento", "/salir_entrenamiento"]
+        actions << ["/administrar_usuarios", "/administrar_entrenamientos"] if user.admin?
         markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
         send_message('Selecciona una opción:', markup)
-        # user.reset_next_bot_command
-        # user.set_next_bot_command('BotCommand::Start')
+        user.reset_next_bot_command
+        user.set_next_bot_command('BotCommand::ManageTraining')
       else
         send_message('Espera a que un entrenador active tu cuenta.')
       end
     end
 
-    def trigger_step(message_text)
-      if ['Remero', 'Remera'].include?(message_text)
-        user.gender = 'female' if message_text == 'Remera'
-        user.gender = 'male' if message_text == 'Remero'
+    def trigger_step
+      if ['Remero', 'Remera'].include?(text)
+        user.gender = 'female' if text == 'Remera'
+        user.gender = 'male' if text == 'Remero'
         user.save
         welcome_gender = user.gender == 'female' ? 'Bienvenida' : 'Bienvenido'
         send_message("¡#{welcome_gender} #{user.username || user.first_name }!")
-        send_message('Espera a que un entrenador active tu cuenta.') unless user.enabled?
+        if user.enabled?
+          self.start
+        else
+          send_message('Espera a que un entrenador active tu cuenta.') unless user.enabled?
+        end
         user.reset_step
       end
     end

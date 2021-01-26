@@ -1,5 +1,12 @@
 class User < ApplicationRecord
+  has_many :user_trainings
+  has_many :trainings, through: :user_trainings
+
   validates_uniqueness_of :telegram_id
+
+  def admin?
+    self.role == 'admin'
+  end
 
   def set_next_bot_command(command)
     self.bot_command_data['command'] = command
@@ -15,13 +22,18 @@ class User < ApplicationRecord
     save
   end
 
+  def next_step
+    self.bot_command_data['step']
+  end
+
   def set_next_step(step)
     self.bot_command_data['step'] = step
+    save
   end
 
   def reset_step
     self.bot_command_data['step'] = nil
-    self.save
+    save
   end
 
   def trigger_bot_step(message)
@@ -31,5 +43,14 @@ class User < ApplicationRecord
       self.bot_command_data['step'] = 'welcome'
       self.save
     end
+  end
+
+  def set_temporary_data(key, value)
+    self.bot_command_data[key] = value
+    self.save
+  end
+
+  def get_temporary_data(key)
+    self.bot_command_data[key]
   end
 end

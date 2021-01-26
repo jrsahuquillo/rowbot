@@ -7,22 +7,15 @@ class BotMessageDispatcher
   end
 
   def process
-    if user.get_next_bot_command
-      bot_command = user.get_next_bot_command.safe_constantize.new(user, message)
-      if bot_command.should_start?
-        bot_command.start
-      else
-        unknown_command
-      end
+    bot_command = !user.get_next_bot_command || message['message']['text'] == '/start' ?
+                                                BotCommand::Start.new(user, message) :
+                                                user.get_next_bot_command.safe_constantize.new(user, message)
+    if bot_command.should_start?
+      bot_command.start
+    elsif bot_command.should_step?
+      bot_command.trigger_step
     else
-      start_command = BotCommand::Start.new(user, message)
-      if start_command.should_start?
-        start_command.start
-      elsif start_command.should_step?
-        start_command.trigger_step(message['message']['text'])
-      else
-        unknown_command
-      end
+      unknown_command
     end
   end
   
