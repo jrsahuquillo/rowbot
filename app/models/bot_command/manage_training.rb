@@ -79,6 +79,7 @@ module BotCommand
           title = '#{level} #{gender} #{date.strftime("%d-%m-%Y %H:%M")}'
           new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, user_id: user.id)
           new_training.save
+          user.reset_next_bot_command
           markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(one_time_keyboard: true, resize_keyboard: true)
           send_message("Entrenamiento - *#{level} - #{gender} - #{date}* creado", markup, 'Markdown')
           send_message('/start')
