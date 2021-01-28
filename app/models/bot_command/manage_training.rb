@@ -14,7 +14,8 @@ module BotCommand
                 'create_training/date',
                 'create_training/hour',
                 'create_training/level',
-                'create_training/gender'
+                'create_training/gender',
+                'list_trainings'
               ]
       current_step = user.bot_command_data['step']
       if current_step && steps.include?(current_step)
@@ -36,11 +37,14 @@ module BotCommand
         user.set_next_step('create_training/date')
         dates = generate_dates
         send_message('Introduce día del entrenamiento:', set_markup(dates))
-      end
+
+      when '/ver_entrenamientos'
+        user.set_next_step('list_trainings')
+        trainings = Training.all.sort_by(&:date).map{|training| "\[#{training.users.size.to_s}/8\] - #{training.title}"}
+        send_message('Selecciona qué entrenamiento quieres ver:', set_markup(trainings))
       # when '/editar_entrenamiento'
-      # when '/ver_entrenamientos'
       # when '/borrar_entrenamientos'
-      # end
+      end
     end
 
     def trigger_step
@@ -76,12 +80,31 @@ module BotCommand
           I18n.locale = :es
           date = I18n.l(user.get_temporary_data('full_date_tmp').to_time, format: :long) 
           level = user.get_temporary_data('level_tmp')
-          title = '#{level} #{gender} #{date.strftime("%d-%m-%Y %H:%M")}'
+          title = "#{level} #{gender} #{date}"
           new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, user_id: user.id)
           new_training.save
-          user.reset_next_bot_command
+          # user.reset_next_bot_command
           markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(one_time_keyboard: true, resize_keyboard: true)
           send_message("Entrenamiento - *#{level} - #{gender} - #{date}* creado", markup, 'Markdown')
+          send_message('/start')
+        end
+
+      when 'list_trainings'
+        training = Training.find_by(title: text.split(" - ").last)
+        user.reset_step
+        if training.present?
+          send_message('Listado de remeras/os de este entrenamiento:', set_markup(genders))
+          rowers = training.users
+          if rowers.size.zero?
+            send_message('Todavía no hay nadie apuntado a este entrenamiento')
+          else
+            rowers_text = []
+            rowers.each_with_index do |rower, index|
+              name = "@#{rower.username}" || "#{rower.first_name} #{rower.last_name}"
+              rowers_text << "#{index + 1}.- #{name}"
+            end
+            send_message(rowers_text.map(&:inspect).join("\n").tr('\"', ''))
+          end
           send_message('/start')
         end
       end
