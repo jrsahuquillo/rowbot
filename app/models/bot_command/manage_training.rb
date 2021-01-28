@@ -1,5 +1,6 @@
 module BotCommand
   class ManageTraining < Base
+
     def should_start?
       text =~ /\A\/administrar_entrenamientos/ ||
       text =~ /\A\/nuevo_entrenamiento/ ||
@@ -15,7 +16,8 @@ module BotCommand
                 'create_training/hour',
                 'create_training/level',
                 'create_training/gender',
-                'list_trainings'
+                'list_trainings',
+                'delete_training'
               ]
       current_step = user.bot_command_data['step']
       if current_step && steps.include?(current_step)
@@ -40,10 +42,14 @@ module BotCommand
 
       when '/ver_entrenamientos'
         user.set_next_step('list_trainings')
-        trainings = Training.all.sort_by(&:date).map{|training| "\[#{training.users.size.to_s}/8\] - #{training.title}"}
-        send_message('Selecciona qué entrenamiento quieres ver:', set_markup(trainings))
+        set_trainings
+        send_message('Selecciona qué entrenamiento quieres ver:', set_markup(@trainings))
+
+      when '/borrar_entrenamiento'
+        user.set_next_step('delete_training')
+        set_trainings
+        send_message('Selecciona qué entrenamiento quieres eliminar:', set_markup(@trainings))
       # when '/editar_entrenamiento'
-      # when '/borrar_entrenamientos'
       end
     end
 
@@ -84,8 +90,8 @@ module BotCommand
           new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, user_id: user.id)
           new_training.save
           # user.reset_next_bot_command
-          markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(one_time_keyboard: true, resize_keyboard: true)
-          send_message("Entrenamiento - *#{level} - #{gender} - #{date}* creado", markup, 'Markdown')
+          # markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(one_time_keyboard: true, resize_keyboard: true)
+          send_message("Entrenamiento - *#{level} - #{gender} - #{date}* creado", nil, 'Markdown')
           send_message('/start')
         end
 
@@ -107,6 +113,19 @@ module BotCommand
           end
           send_message('/start')
         end
+
+      when 'delete_training'
+        training = Training.find_by(title: text.split(" - ").last)
+        user.reset_step
+        if training.present?
+          if training.destroy
+            send_message("Entrenamiento *#{training.level} #{training.gender} #{training.date.strftime("%d-%m-%Y %H:%M")}* eliminado", nil, 'Markdown')
+          else
+            send_message("El entrenamiento no se ha podido eliminar")
+          end
+        else
+          send_message("Entrenamiento no encontrado")
+        end
       end
     end
 
@@ -123,6 +142,10 @@ module BotCommand
       dates = []
       (0..6).each{|i| dates << I18n.l((Date.today + i.day).to_time, format: :long)}
       dates
+    end
+
+    def set_trainings
+      @trainings = Training.all.sort_by(&:date).map{|training| "\[#{training.users.size.to_s}/8\] - #{training.title}"}
     end
   end
 end
