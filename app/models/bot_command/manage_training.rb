@@ -91,9 +91,9 @@ module BotCommand
         if user.get_temporary_data('full_date_tmp').present? && user.get_temporary_data('level_tmp').present?
           gender = text
           I18n.locale = :es
-          date = I18n.l(user.get_temporary_data('full_date_tmp').to_time, format: :long) 
+          date = I18n.l(user.get_temporary_data('full_date_tmp').to_time, format: :complete) 
           level = user.get_temporary_data('level_tmp')
-          title = "#{level} #{gender} #{date}"
+          title = "#{date} > #{level} #{gender}"
           new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, user_id: user.id)
           new_training.save
           user.reset_next_bot_command
@@ -186,7 +186,8 @@ module BotCommand
         end
         send_message('/start')
 
-      when 'edit_training/hour'
+
+
       when 'edit_training/level'
       when 'edit_training/gender'
 
@@ -210,11 +211,11 @@ module BotCommand
     end
 
     def set_trainings
-      @trainings = Training.all.sort_by(&:date).map{|training| "\[#{training.users.size.to_s}/8\] - #{training.title}"}
+      @trainings = Training.all.sort_by(&:date).map{|training| "#{training.title} - \[#{training.users.size.to_s}/8\]"}
     end
 
     def set_training(text)
-      @training = Training.find_by(title: text.split(" - ").last)
+      @training = Training.find_by(title: text.split(" - ").first)
     end
 
     def send_training_to_all_users(training, attribute=nil)
@@ -224,7 +225,7 @@ module BotCommand
         attribute_text = set_attribute_text(attribute)
         "@#{admin.username} ha actualizado #{attribute_text} del entrenamiento *#{training.title}*."
       else
-        "*#{training.title}* ha sido creado por @#{admin.username}. ¿Te apuntas?"
+        "El entrenamiento *#{training.title}* ha sido creado por @#{admin.username}. ¿Te apuntas?"
       end
       telegram_ids = User.pluck(:telegram_id)
       telegram_ids.each do |telegram_id|
