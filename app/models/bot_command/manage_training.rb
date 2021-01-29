@@ -1,6 +1,8 @@
 module BotCommand
   class ManageTraining < Base
 
+    LEVELS = [["Iniciación", "Fitness"], ["Competición", "Paralímpico"]]
+
     def should_start?
       text =~ /\A\/administrar_entrenamientos/ ||
       text =~ /\A\/crear_entrenamiento/ ||
@@ -21,7 +23,8 @@ module BotCommand
                 'edit_training',
                 'edit_training/attributes',
                 'edit_training/date',
-                'edit_training/hour'
+                'edit_training/hour',
+                'edit_training/level'
               ]
       current_step = user.bot_command_data['step']
       if current_step && steps.include?(current_step)
@@ -74,8 +77,7 @@ module BotCommand
         hour = text
         date = user.get_temporary_data('date_tmp')
         user.set_temporary_data('full_date_tmp', DateTime.parse("#{@date} #{hour}") )
-        levels = ["Iniciación", "Fitness", "Competición"]
-        send_message('Introduce el nivel del entrenamiento:', set_markup(levels))
+        send_message('Introduce el nivel del entrenamiento:', set_markup(LEVELS))
         
       when 'create_training/level'
         if user.get_temporary_data('full_date_tmp').present?
@@ -163,8 +165,7 @@ module BotCommand
             send_message('Introduce la nueva hora del entrenamiento:', set_markup(hours))
           when "Nivel"
             user.set_next_step('edit_training/level')
-            levels = ["Iniciación", "Fitness", "Competición"]
-            send_message('Introduce el nuevo nivel del entrenamiento:', set_markup(levels))
+            send_message('Introduce el nuevo nivel del entrenamiento:', set_markup(LEVELS))
           when "Género"
             user.set_next_step('edit_training/gender')
             genders = ["Mixto", "Femenino", "Masculino"]
@@ -209,7 +210,7 @@ module BotCommand
             training.title = "#{formated_date} > #{training.level} #{training.gender}"
             if training.save
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
-              send_training_to_all_users(training, 'date')
+              send_training_to_all_users(training, 'hour')
             else
               send_message("No se pudo modificar la hora del entrenamiento")
             end
@@ -222,6 +223,27 @@ module BotCommand
         send_message('/start')
 
       when 'edit_training/level'
+        training_id = user.get_temporary_data('training_tmp')
+        training = Training.find(training_id)
+        user.reset_next_bot_command
+        if training.present?
+          if LEVELS.flatten.include?(text)
+            training.level = text
+            training.title = "#{training.date} > #{text} #{training.gender}"
+            if training.save
+              send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
+              send_training_to_all_users(training, 'level')
+            else
+              send_message("No se pudo modificar el nivel del entrenamiento")
+            end
+          else
+            send_message("Formato de nivel no válida")
+          end
+        else
+          send_message("Entrenamiento no encontrado")
+        end
+        send_message('/start')
+
       when 'edit_training/gender'
 
       end
