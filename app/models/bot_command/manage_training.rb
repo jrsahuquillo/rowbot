@@ -190,25 +190,36 @@ module BotCommand
               send_message("No se pudo modificar la fecha del entrenamiento")
             end
           else
-            send_message("Entrenamiento no encontrado")
+            send_message("Formato de fecha no válido")
           end
+        else
+          send_message("Entrenamiento no encontrado")
         end
         send_message('/start')
 
-      # when 'edit_training/hour'
-      #   training_id = user.get_temporary_data('training_tmp')
-      #   training = Training.find(training_id)
-      #   user.reset_next_bot_command
-      #   if training.present?
-      #     if text =~ /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
-      #       current_time = "#{training.date.hour}:#{training.date.min}"
-      #       if training.update(date: new_date, title: "#{training.level} #{training.gender} #{text}")
-      #         send_message("Entrenamiento *#{training.level} #{training.gender} #{training.date.strftime("%d-%m-%Y %H:%M")}* actualizado", nil, 'Markdown')
-      #         send_training_to_all_users(training, 'date')
-      #       end
-      #     end
-      #   end
-      #   send_message('/start')
+      when 'edit_training/hour'
+        training_id = user.get_temporary_data('training_tmp')
+        training = Training.find(training_id)
+        user.reset_next_bot_command
+        if training.present?
+          if text =~ /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+            training.date = training.date.change(hour: text.split(':').first, min: text.split(':').last)
+            I18n.locale = :es
+            formated_date = I18n.l((training.date).to_time, format: :complete)
+            training.title = "#{formated_date} > #{training.level} #{training.gender}"
+            if training.save
+              send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
+              send_training_to_all_users(training, 'date')
+            else
+              send_message("No se pudo modificar la hora del entrenamiento")
+            end
+          else
+            send_message("Formato de hora no válida")
+          end
+        else
+          send_message("Entrenamiento no encontrado")
+        end
+        send_message('/start')
 
       when 'edit_training/level'
       when 'edit_training/gender'
