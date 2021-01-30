@@ -52,6 +52,7 @@ module BotCommand
         else
           send_message("El usuario no ha sido localizado")
         end
+        send_message('/start')
 
       when 'set_users_level'
         rower_id = user.get_temporary_data('rower_it_tmp')
@@ -70,6 +71,7 @@ module BotCommand
           rower.reset_next_bot_command
           user.reset_next_bot_command
         end
+        send_message('/start')
 
       when 'disable_users'
         rower = User.find_by(username: text.split(' ').first)
@@ -83,6 +85,7 @@ module BotCommand
         else
           send_message("El usuario no ha sido localizado")
         end
+        send_message('/start')
 
       end
     end

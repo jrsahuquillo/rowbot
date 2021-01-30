@@ -42,17 +42,29 @@ module BotCommand
       when '/ver_entrenamientos'
         user.set_next_step('list_trainings')
         set_trainings
-        send_message('Selecciona qué entrenamiento quieres ver:', set_markup(@trainings))
+        if @trainings.present?
+          send_message('Selecciona qué entrenamiento quieres ver:', set_markup(@trainings))
+        else
+          send_message('No hay entrenamientos creados')
+        end
 
       when '/borrar_entrenamiento'
         user.set_next_step('delete_training')
         set_trainings
-        send_message('Selecciona qué entrenamiento quieres eliminar:', set_markup(@trainings))
+        if @trainings.present?
+          send_message('Selecciona qué entrenamiento quieres eliminar:', set_markup(@trainings))
+        else
+          send_message('No hay entrenamientos creados')
+        end
 
       when '/editar_entrenamiento'
         user.set_next_step('edit_training')
         set_trainings
-        send_message('Selecciona qué entrenamiento quieres editar:', set_markup(@trainings))
+        if @trainings.present?
+          send_message('Selecciona qué entrenamiento quieres editar:', set_markup(@trainings))
+        else
+          send_message('No hay entrenamientos creados')
+        end
       end
     end
 
@@ -306,7 +318,7 @@ module BotCommand
       else
         actions = ["¡Me apunto!", "No me apunto"]
         markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
-        "✅ El entrenamiento *#{training.title}* ha sido creado por @#{admin.username}. ¿Te apuntas?"
+        "✅ El entrenamiento:\n *#{training.title}* ha sido creado por @#{admin.username}.\n ¿Te apuntas?"
       end
       telegram_ids = User.pluck(:telegram_id)
       telegram_ids.each do |telegram_id|
