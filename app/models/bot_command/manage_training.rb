@@ -5,7 +5,6 @@ module BotCommand
     GENDERS = ["Mixto", "Femenino", "Masculino"]
 
     def should_start?
-      text =~ /\A\/administrar_entrenamientos/ ||
       text =~ /\A\/crear_entrenamiento/ ||
       text =~ /\A\/editar_entrenamiento/ ||
       text =~ /\A\/ver_entrenamientos/ ||
@@ -14,7 +13,6 @@ module BotCommand
 
     def should_step?
       steps = [
-                'manage_trainings',
                 'create_training/date',
                 'create_training/hour',
                 'create_training/level',
@@ -40,11 +38,6 @@ module BotCommand
     def start
       return send_message('Espera a que un entrenador active tu cuenta.') unless user.enabled?
       case text
-      when '/administrar_entrenamientos'
-        user.set_next_step('manage_trainings')
-        actions = ['/crear_entrenamiento', '/editar_entrenamiento'], ['/ver_entrenamientos', '/borrar_entrenamiento']
-        send_message('Administrar entrenamientos:', set_markup(actions))
-
       when '/crear_entrenamiento'
         user.set_next_step('create_training/date')
         send_message('Introduce día del entrenamiento:', set_markup(generate_dates))
@@ -77,33 +70,48 @@ module BotCommand
         
       when 'create_training/hour'
         user.set_next_step('create_training/level')
-        hour = text
-        date = user.get_temporary_data('date_tmp')
-        user.set_temporary_data('full_date_tmp', DateTime.parse("#{@date} #{hour}") )
-        send_message('Introduce el nivel del entrenamiento:', set_markup(LEVELS))
+        if text =~ /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+          hour = text
+          date = user.get_temporary_data('date_tmp')
+          user.set_temporary_data('full_date_tmp', DateTime.parse("#{@date} #{hour}") )
+          send_message('Introduce el nivel del entrenamiento:', set_markup(LEVELS))
+        else
+          send_message("Formato de hora no válida")
+          user.reset_step
+          send_message('/start')
+        end
         
       when 'create_training/level'
         if user.get_temporary_data('full_date_tmp').present?
           user.set_next_step('create_training/gender')
-          user.set_temporary_data('level_tmp', text)
-          send_message('Introduce el género del entrenamiento:', set_markup(GENDERS))
-        else
-          user.reset_step
+          if LEVELS.flatten.include?(text)
+            user.set_temporary_data('level_tmp', text)
+            send_message('Introduce el género del entrenamiento:', set_markup(GENDERS))
+          else
+            send_message("Formato de nivel no válido")
+            user.reset_step
+            send_message('/start')
+          end
         end
 
       when 'create_training/gender'
         user.reset_step
         if user.get_temporary_data('full_date_tmp').present? && user.get_temporary_data('level_tmp').present?
-          gender = text
-          I18n.locale = :es
-          date = I18n.l(user.get_temporary_data('full_date_tmp').to_time, format: :complete) 
-          level = user.get_temporary_data('level_tmp')
-          title = "#{date} > #{level} #{gender}"
-          new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, user_id: user.id)
-          new_training.save
-          user.reset_next_bot_command
-          send_message("Entrenamiento - *#{title}* creado", nil, 'Markdown')
-          send_training_to_all_users(new_training)
+          if GENDERS.flatten.include?(text)
+            gender = text
+            I18n.locale = :es
+            date = I18n.l(user.get_temporary_data('full_date_tmp').to_time, format: :complete) 
+            level = user.get_temporary_data('level_tmp')
+            title = "#{date} > #{level} #{gender}"
+            new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, user_id: user.id)
+            new_training.save
+            user.reset_next_bot_command
+            send_message("Entrenamiento - *#{title}* creado", nil, 'Markdown')
+            send_training_to_all_users(new_training)
+          else
+            send_message("Formato de género no válido")
+            user.reset_next_step
+          end
           send_message('/start')
         end
 
@@ -302,7 +310,7 @@ module BotCommand
       if attribute
         markup = nil
         attribute_text = set_attribute_text(attribute)
-        "@#{admin.username} ha actualizado #{attribute_text} del entrenamiento *#{training.title}*."
+        "⚠️ *#{attribute_text}* del entrenamiento:\n*#{training.title}*\nha sido actualizado por @#{admin.username}."
       else
         actions = ["¡Me apunto!", "No me apunto"]
         markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
@@ -324,13 +332,13 @@ module BotCommand
     def set_attribute_text(attribute)
       case attribute
       when "date"
-        "la fecha"
+        "La fecha"
       when "hour"
-        "la hora"
+        "La hora"
       when "gender"
-        "el género"
+        "El género"
       when "level"
-        "el nivel"
+        "El nivel"
       end
     end
   end
