@@ -71,8 +71,5 @@ module BotCommand
       end
     end
 
-    def set_markup(actions)
-      Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
-    end
   end
 end
