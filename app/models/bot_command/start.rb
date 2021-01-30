@@ -17,7 +17,7 @@ module BotCommand
         user.save
       elsif user.enabled?
         actions = ["/ver_entrenamientos", "/mis_entrenamientos"], ["/unirse_entrenamiento", "/salir_entrenamiento"]
-        actions << ["/administrar_usuarios", "/administrar_entrenamientos"] if user.admin?
+        actions.unshift(["/administrar_entrenamientos"], ["/administrar_usuarios"]) if user.admin?
         markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
         send_message('Selecciona una opción:', markup)
         user.reset_next_bot_command

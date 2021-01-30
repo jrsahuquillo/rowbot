@@ -46,8 +46,7 @@ module BotCommand
 
       when '/crear_entrenamiento'
         user.set_next_step('create_training/date')
-        dates = generate_dates
-        send_message('Introduce día del entrenamiento:', set_markup(dates))
+        send_message('Introduce día del entrenamiento:', set_markup(generate_dates))
 
       when '/ver_entrenamientos'
         user.set_next_step('list_trainings')
@@ -101,7 +100,6 @@ module BotCommand
           new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, user_id: user.id)
           new_training.save
           user.reset_next_bot_command
-          # markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(one_time_keyboard: true, resize_keyboard: true)
           send_message("Entrenamiento - *#{title}* creado", nil, 'Markdown')
           send_training_to_all_users(new_training)
           send_message('/start')
@@ -131,7 +129,9 @@ module BotCommand
         user.reset_next_bot_command
         if @training.present?
           if @training.destroy
-            send_message("Entrenamiento *#{@training.level} #{@training.gender} #{@training.date.strftime("%d-%m-%Y %H:%M")}* eliminado", nil, 'Markdown')
+            message = "❌ El entrenamiento *#{@training.level} #{@training.gender} #{@training.date.strftime("%d/%m/%Y %H:%M")}* ha sido cancelado"
+            send_message(message, nil, 'Markdown')
+            send_message_to_rowers(@training, message) if @training.users
           else
             send_message("El entrenamiento no se ha podido eliminar")
           end
@@ -298,14 +298,24 @@ module BotCommand
       admin = training.user
       text =
       if attribute
+        markup = nil
         attribute_text = set_attribute_text(attribute)
         "@#{admin.username} ha actualizado #{attribute_text} del entrenamiento *#{training.title}*."
       else
-        "El entrenamiento *#{training.title}* ha sido creado por @#{admin.username}. ¿Te apuntas?"
+        actions = ["¡Me apunto!", "No me apunto"]
+        markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
+        "✅ El entrenamiento *#{training.title}* ha sido creado por @#{admin.username}. ¿Te apuntas?"
       end
       telegram_ids = User.pluck(:telegram_id)
       telegram_ids.each do |telegram_id|
-        @api.call('sendMessage', chat_id: telegram_id, text: text, reply_markup: nil, parse_mode: 'Markdown')
+        @api.call('sendMessage', chat_id: telegram_id, text: text, reply_markup: markup, parse_mode: 'Markdown')
+      end
+    end
+
+    def send_message_to_rowers(training, message)
+      rowers_telegram_ids = training.users.pluck(:telegram_id)
+      rowers_telegram_ids.each do |telegram_id|
+        @api.call('sendMessage', chat_id: telegram_id, text: message, reply_markup: nil, parse_mode: 'Markdown')
       end
     end
 
