@@ -2,6 +2,7 @@ module BotCommand
   class ManageUser < Base
 
     def should_start?
+      text =~ /\A\/administrar_socios/ ||
       text =~ /\A\/activar_socios/ ||
       text =~ /\A\/desactivar_socios/
     end
@@ -25,22 +26,22 @@ module BotCommand
       case text
       when '/activar_socios'
         user.set_next_step('enable_users')
-        disabled_users = User.where(enabled: false).sort_by(&:created_at).map{|user| "#{user.username}" }
-        unleveled_users = User.where(level: nil).sort_by(&:created_at).map{|user| "#{user.username}"}
-        rowers = (disabled_users + unleveled_users).uniq
+        disabled_rowers = User.where(enabled: false).sort_by(&:created_at).map{|rower| "#{rower.username} (#{rower.first_name} #{rower.last_name})" }
+        unleveled_rowers = User.where(level: nil).sort_by(&:created_at).map{|rower| "#{rower.username} (#{rower.first_name} #{rower.last_name})"}
+        rowers = (disabled_rowers + unleveled_rowers).uniq
         send_message('Selecciona al socio/a que quieres activar:', set_markup(rowers))
 
       when '/desactivar_socios'
         user.set_next_step('disable_users')
-        enabled_users = User.where(enabled: true).sort_by(&:created_at).map{|user| "#{user.username}" }
-        send_message('Selecciona al socio/a que quieres desactivar:', set_markup(enabled_users))
+        enabled_rowers = User.where(enabled: true).sort_by(&:created_at).map{|rower| "#{rower.username} (#{rower.first_name} #{rower.last_name})" }
+        send_message('Selecciona al socio/a que quieres desactivar:', set_markup(enabled_rowers))
       end
     end
 
     def trigger_step
       case user.next_step
       when 'enable_users'
-        rower = User.find_by(username: text)
+        rower = User.find_by(username: text.split(' ').first)
         user.reset_step
         if rower.present?
           user.set_temporary_data('rower_it_tmp', rower.id)
@@ -48,6 +49,8 @@ module BotCommand
           rower.update_column(:enabled, true)
           rower_text = rower.gender == "female" ? "de la remera" : "del remero"
           send_message("Indica el nivel #{rower_text}", set_markup(LEVELS))
+        else
+          send_message("El usuario no ha sido localizado")
         end
 
       when 'set_users_level'
@@ -69,7 +72,7 @@ module BotCommand
         end
 
       when 'disable_users'
-        rower = User.find_by(username: text)
+        rower = User.find_by(username: text.split(' ').first)
         user.reset_step
         if rower.present?
           rower.update_column(:enabled, false)
@@ -77,6 +80,8 @@ module BotCommand
           send_state_message(rower, 'disable')
           rower.reset_next_bot_command
           user.reset_next_bot_command
+        else
+          send_message("El usuario no ha sido localizado")
         end
 
       end
