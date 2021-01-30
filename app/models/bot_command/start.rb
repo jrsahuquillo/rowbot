@@ -2,6 +2,7 @@ module BotCommand
   class Start < Base
     def should_start?
       text =~ /\A\/start/ ||
+              /\A\/ver_entrenamientos/ ||
               (/\A\/administrar_entrenamientos/ if user.admin?) ||
               (/\A\/administrar_socios/ if user.admin?)
     end
@@ -36,12 +37,27 @@ module BotCommand
             actions = ['/crear_entrenamiento', '/editar_entrenamiento'], ['/ver_entrenamientos', '/borrar_entrenamiento']
             send_message('Administrar entrenamientos:', set_markup(actions))
             user.set_next_bot_command('BotCommand::AdminManageTraining')
+
         when '/administrar_socios'
           actions = []
           actions << ['/activar_socios'] if (User.where(enabled: false).present? || User.where(level: nil).present?)
           actions << ['/desactivar_socios'] if User.where(enabled: true).present?
           send_message('Opciones:', set_markup(actions))
           user.set_next_bot_command('BotCommand::AdminManageUser')
+
+        when '/ver_entrenamientos'
+          gender = user.gender == "female" ? "Femenino" : "Masculino"
+          trainings = Training.where(level: user.level, gender: [gender, "Mixto"])
+          if trainings.present?
+            send_message('Próximos entrenamientos:')
+            trainings_text = []
+            trainings.sort_by(&:date).each do |training|
+              trainings_text << "*#{training.title}* - \[[#{training.users.size.to_s}/8\]]"
+            end
+            send_message(trainings_text.map(&:inspect).join("\n").tr('\"', ''), nil, 'Markdown')
+          else
+            send_message('No hay entrenamientos')
+          end
         end
       else
         send_message('Espera a que un entrenador active tu cuenta.')
@@ -74,6 +90,10 @@ module BotCommand
       admins_telegram_ids.each do |telegram_id|
         @api.call('sendMessage', chat_id: telegram_id, text: message, reply_markup: nil, parse_mode: nil)
       end
+    end
+
+    def get_custom_trainings(user)
+      Training.where(level: "Paralímpico", gender: [gender, "Mixto"]) if user.level == "Paralímpico"
     end
 
   end
