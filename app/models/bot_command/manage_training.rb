@@ -1,9 +1,6 @@
 module BotCommand
   class ManageTraining < Base
 
-    LEVELS = [["Iniciación", "Fitness"], ["Competición", "Paralímpico"]]
-    GENDERS = ["Mixto", "Femenino", "Masculino"]
-
     def should_start?
       text =~ /\A\/crear_entrenamiento/ ||
       text =~ /\A\/editar_entrenamiento/ ||
@@ -60,7 +57,6 @@ module BotCommand
     end
 
     def trigger_step
-      # return send_message('Espera a que un entrenador active tu cuenta.') if !user.enabled?
       case user.next_step
       when 'create_training/date'
         user.set_temporary_data('date_tmp', text)

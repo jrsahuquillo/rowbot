@@ -3,6 +3,8 @@ require 'telegram/bot'
 module BotCommand
   class Base
     attr_reader :user, :message, :api
+    LEVELS = [["Iniciación", "Fitness"], ["Competición", "Paralímpico"]]
+    GENDERS = ["Mixto", "Femenino", "Masculino"]
 
     def initialize(user, message)
       @user = user
