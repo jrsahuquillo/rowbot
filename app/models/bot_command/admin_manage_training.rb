@@ -1,5 +1,5 @@
 module BotCommand
-  class ManageTraining < Base
+  class AdminManageTraining < Base
 
     def should_start?
       text =~ /\A\/crear_entrenamiento/ ||

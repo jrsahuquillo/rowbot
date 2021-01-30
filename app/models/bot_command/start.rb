@@ -35,13 +35,13 @@ module BotCommand
         when '/administrar_entrenamientos'
             actions = ['/crear_entrenamiento', '/editar_entrenamiento'], ['/ver_entrenamientos', '/borrar_entrenamiento']
             send_message('Administrar entrenamientos:', set_markup(actions))
-            user.set_next_bot_command('BotCommand::ManageTraining')
+            user.set_next_bot_command('BotCommand::AdminManageTraining')
         when '/administrar_socios'
           actions = []
           actions << ['/activar_socios'] if (User.where(enabled: false).present? || User.where(level: nil).present?)
           actions << ['/desactivar_socios'] if User.where(enabled: true).present?
           send_message('Opciones:', set_markup(actions))
-          user.set_next_bot_command('BotCommand::ManageUser')
+          user.set_next_bot_command('BotCommand::AdminManageUser')
         end
       else
         send_message('Espera a que un entrenador active tu cuenta.')

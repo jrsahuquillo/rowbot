@@ -1,5 +1,5 @@
 module BotCommand
-  class ManageUser < Base
+  class AdminManageUser < Base
 
     def should_start?
       text =~ /\A\/administrar_socios/ ||
