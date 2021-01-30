@@ -38,6 +38,7 @@ module BotCommand
     end
 
     def start
+      return send_message('Espera a que un entrenador active tu cuenta.') unless user.enabled?
       case text
       when '/administrar_entrenamientos'
         user.set_next_step('manage_trainings')
@@ -66,6 +67,7 @@ module BotCommand
     end
 
     def trigger_step
+      # return send_message('Espera a que un entrenador active tu cuenta.') if !user.enabled?
       case user.next_step
       when 'create_training/date'
         user.set_temporary_data('date_tmp', text)
