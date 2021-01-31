@@ -7,7 +7,8 @@ module BotCommand
         '/administrar_entrenamientos',
         '/administrar_socios',
         '/unirse_entrenamiento',
-        '/salir_entrenamiento'
+        '/salir_entrenamiento',
+        '/mis_entrenamientos'
       ].include?(text)
     end
 
@@ -91,10 +92,21 @@ module BotCommand
           else
             send_message('No hay entrenamientos')
           end
+
+        when '/mis_entrenamientos'
+          user.set_next_step('my_trainings')
+          user_trainings = user.trainings.sort_by(&:date).map{|training| "#{training.title} - \[#{training.users.size.to_s}/8\]"}
+          if user_trainings.present?
+            send_message('Selecciona qué entrenamiento quieres ver:', set_markup(user_trainings))
+            user.set_next_bot_command('BotCommand::UserManageTraining')
+            user.set_next_step('list_my_trainings')
+          else
+            send_message('No estás en ningún entrenamiento')
+          end
         end
 
-      else
-        send_message('Espera a que un entrenador active tu cuenta. ⏳')
+        else
+          send_message('Espera a que un entrenador active tu cuenta. ⏳')
       end
     end
 
