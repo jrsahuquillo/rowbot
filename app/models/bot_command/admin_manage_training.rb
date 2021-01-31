@@ -356,7 +356,7 @@ module BotCommand
     end
 
     def set_trainings
-      @trainings = Training.all.sort_by(&:date).map{|training| "#{training.title} - \[#{training.users.size.to_s}/8\]"}
+      @trainings = Training.where(user_id: user.id).joinable.sort_by(&:date).map{|training| "#{training.title} - \[#{training.users.size.to_s}/8\]"}
     end
 
     def set_training(text)
