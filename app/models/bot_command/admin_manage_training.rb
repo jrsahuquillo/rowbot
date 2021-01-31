@@ -16,6 +16,7 @@ module BotCommand
                 'create_training/hour',
                 'create_training/level',
                 'create_training/gender',
+                'create_training/boat',
                 'list_trainings',
                 'delete_training',
                 'edit_training',
@@ -106,21 +107,36 @@ module BotCommand
         end
 
       when 'create_training/gender'
-        user.reset_step
         if user.get_temporary_data('full_date_tmp').present? && user.get_temporary_data('level_tmp').present?
+          user.set_next_step('create_training/boat')
           if GENDERS.flatten.include?(text)
-            gender = text
+            user.set_temporary_data('gender_tmp', text)
+            send_message('♀Introduce la embarcació del entrenamiento:', set_markup(BOATS))
+          else
+            send_message("Formato de género no válido")
+            user.reset_step
+            send_message('/start')
+          end
+        end
+
+      when 'create_training/boat'
+        user.reset_step
+        date = user.get_temporary_data('full_date_tmp')
+        level = user.get_temporary_data('level_tmp')
+        gender = user.get_temporary_data('gender_tmp')
+        if date.present? && level.present? && gender.present?
+          if BOATS.flatten.include?(text)
+            boat = text
             I18n.locale = :es
-            date = I18n.l(user.get_temporary_data('full_date_tmp').to_time, format: :complete) 
-            level = user.get_temporary_data('level_tmp')
-            title = "#{date} > #{level} #{gender}"
-            new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, user_id: user.id)
+            formatted_date = I18n.l((date).to_time, format: :complete)
+            title = "#{formatted_date} > #{level} #{gender} #{boat}"
+            new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, boat: boat, user_id: user.id)
             new_training.save
             user.reset_next_bot_command
             send_message("✅ Has creado el entrenamiento *#{title}*", nil, 'Markdown')
             send_training_to_all_users(new_training)
           else
-            send_message("Formato de género no válido")
+            send_message("Formato de embarcación no válida")
             user.reset_next_step
           end
           send_message('/start')

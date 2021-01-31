@@ -5,6 +5,7 @@ class CreateTrainings < ActiveRecord::Migration[6.1]
       t.datetime :date
       t.string :level
       t.string :gender
+      t.string :boat
       t.references :user, null: false, foreign_key: true
 
       t.timestamps

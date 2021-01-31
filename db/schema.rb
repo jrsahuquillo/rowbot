@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 2021_01_26_200214) do
     t.datetime "date"
     t.string "level"
     t.string "gender"
+    t.string "boat"
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

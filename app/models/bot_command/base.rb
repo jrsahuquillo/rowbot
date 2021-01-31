@@ -5,6 +5,7 @@ module BotCommand
     attr_reader :user, :message, :api
     LEVELS = [["Iniciación", "Fitness"], ["Competición", "Paralímpico"]]
     GENDERS = ["Mixto", "Femenino", "Masculino"]
+    BOATS = [["Falucho", "Llaüt"], ["Yola", "Dos de Mar"]]
 
     def initialize(user, message)
       @user = user
