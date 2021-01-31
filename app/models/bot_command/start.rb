@@ -52,7 +52,7 @@ module BotCommand
 
         when '/ver_entrenamientos'
           gender = user.gender == "female" ? "Femenino" : "Masculino"
-          trainings = Training.where(level: user.level, gender: [gender, "Mixto"])
+          trainings = Training.joinable.where(level: user.level, gender: [gender, "Mixto"])
           if trainings.present?
             send_message('Próximos entrenamientos:')
             trainings_text = []
@@ -68,7 +68,7 @@ module BotCommand
         when '/unirse_entrenamiento'
           gender = user.gender == "female" ? "Femenino" : "Masculino"
           trainings = []
-          user_trainings = Training.where(level: user.level, gender: [gender, "Mixto"])
+          user_trainings = Training.joinable.where(level: user.level, gender: [gender, "Mixto"])
           if user_trainings.present?
             user_trainings.sort_by(&:date).each do |training|
               trainings <<  "#{training.title} - [#{training.users.size.to_s}/8]"
@@ -82,7 +82,7 @@ module BotCommand
 
         when '/salir_entrenamiento'
           trainings = []
-          user_trainings = user.trainings
+          user_trainings = user.trainings.joinable
           if user_trainings.present?
             user_trainings.sort_by(&:date).each do |training|
               trainings <<  "#{training.title} - [#{training.users.size.to_s}/8]"
@@ -96,7 +96,7 @@ module BotCommand
 
         when '/mis_entrenamientos'
           user.set_next_step('my_trainings')
-          user_trainings = user.trainings.sort_by(&:date).map{|training| "#{training.title} - \[#{training.users.size.to_s}/8\]"}
+          user_trainings = user.trainings.joinable.sort_by(&:date).map{|training| "#{training.title} - \[#{training.users.size.to_s}/8\]"}
           if user_trainings.present?
             send_message('Selecciona qué entrenamiento quieres ver:', set_markup(user_trainings))
             user.set_next_bot_command('BotCommand::UserManageTraining')
@@ -137,10 +137,6 @@ module BotCommand
       admins_telegram_ids.each do |telegram_id|
         @api.call('sendMessage', chat_id: telegram_id, text: message, reply_markup: nil, parse_mode: nil)
       end
-    end
-
-    def get_custom_trainings(user)
-      Training.where(level: "Paralímpico", gender: [gender, "Mixto"]) if user.level == "Paralímpico"
     end
 
   end
