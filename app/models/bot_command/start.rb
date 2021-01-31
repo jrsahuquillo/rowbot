@@ -1,10 +1,12 @@
 module BotCommand
   class Start < Base
     def should_start?
-      text =~ /\A\/start/ ||
-              /\A\/ver_entrenamientos/ ||
-              (/\A\/administrar_entrenamientos/ if user.admin?) ||
-              (/\A\/administrar_socios/ if user.admin?)
+      [
+        '/start',
+        '/ver_entrenamientos',
+        '/administrar_entrenamientos',
+        '/administrar_socios'
+      ].include?(text)
     end
 
     def should_step?
@@ -72,11 +74,11 @@ module BotCommand
           user.gender = 'male' if text == 'Remero'
           user.save
           welcome_gender = user.gender == 'female' ? 'Bienvenida' : 'Bienvenido'
-          send_message("¡#{welcome_gender} @#{user.username || user.first_name }!")
+          send_message("¡#{welcome_gender} @#{user.username || user.first_name } 👋🏻!")
           if user.enabled?
             self.start
           else
-            send_message('Espera a que un entrenador active tu cuenta.') unless user.enabled?
+            send_message('Espera a que un entrenador active tu cuenta. ⛔️') unless user.enabled?
             send_new_user_to_admins(user)
           end
           user.reset_step
@@ -86,7 +88,7 @@ module BotCommand
 
     def send_new_user_to_admins(rower)
       admins_telegram_ids = User.where(role: 'admin').pluck(:telegram_id)
-      message = "#{rower.username} (#{rower.first_name} #{rower.last_name}) está esperando a ser activado. Entra en /administrar_socios."
+      message = "🔴 #{rower.username} (#{rower.first_name} #{rower.last_name}) está esperando a que le activen. Entra en /administrar_socios."
       admins_telegram_ids.each do |telegram_id|
         @api.call('sendMessage', chat_id: telegram_id, text: message, reply_markup: nil, parse_mode: nil)
       end

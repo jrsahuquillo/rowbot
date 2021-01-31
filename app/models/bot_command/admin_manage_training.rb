@@ -2,10 +2,12 @@ module BotCommand
   class AdminManageTraining < Base
 
     def should_start?
-      text =~ /\A\/crear_entrenamiento/ ||
-      text =~ /\A\/editar_entrenamiento/ ||
-      text =~ /\A\/ver_entrenamientos/ ||
-      text =~ /\A\/borrar_entrenamiento/
+      [
+        '/crear_entrenamiento',
+        '/editar_entrenamiento',
+        '/ver_entrenamientos',
+        '/borrar_entrenamiento'
+      ].include?(text)
     end
 
     def should_step?
@@ -23,6 +25,7 @@ module BotCommand
                 'edit_training/level',
                 'edit_training/gender'
               ]
+
       current_step = user.bot_command_data['step']
       if current_step && steps.include?(current_step)
         true
@@ -33,11 +36,11 @@ module BotCommand
     end
 
     def start
-      return send_message('Espera a que un entrenador active tu cuenta.') unless user.enabled?
+      return send_message('Espera a que un entrenador active tu cuenta. ⛔️') unless user.enabled?
       case text
       when '/crear_entrenamiento'
         user.set_next_step('create_training/date')
-        send_message('Introduce día del entrenamiento:', set_markup(generate_dates))
+        send_message('🗓 Introduce día del entrenamiento:', set_markup(generate_dates))
 
       when '/ver_entrenamientos'
         user.set_next_step('list_trainings')
@@ -74,7 +77,7 @@ module BotCommand
         user.set_temporary_data('date_tmp', text)
         user.set_next_step('create_training/hour')
         hours = [ "18:00", "18:30"], [ "19:00", "19:30"], ["20:00", "20:30"]
-        send_message('Introduce la hora del entrenamiento (HH:MM):', set_markup(hours))
+        send_message('🕑 Introduce la hora del entrenamiento (HH:MM):', set_markup(hours))
         
       when 'create_training/hour'
         user.set_next_step('create_training/level')
@@ -82,7 +85,7 @@ module BotCommand
           hour = text
           date = user.get_temporary_data('date_tmp')
           user.set_temporary_data('full_date_tmp', DateTime.parse("#{@date} #{hour}") )
-          send_message('Introduce el nivel del entrenamiento:', set_markup(LEVELS))
+          send_message('💪🏻 Introduce el nivel del entrenamiento:', set_markup(LEVELS))
         else
           send_message("Formato de hora no válida")
           user.reset_step
@@ -94,7 +97,7 @@ module BotCommand
           user.set_next_step('create_training/gender')
           if LEVELS.flatten.include?(text)
             user.set_temporary_data('level_tmp', text)
-            send_message('Introduce el género del entrenamiento:', set_markup(GENDERS))
+            send_message('♀︎♂︎ Introduce el género del entrenamiento:', set_markup(GENDERS))
           else
             send_message("Formato de nivel no válido")
             user.reset_step

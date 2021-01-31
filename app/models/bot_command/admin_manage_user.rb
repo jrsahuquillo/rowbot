@@ -2,9 +2,11 @@ module BotCommand
   class AdminManageUser < Base
 
     def should_start?
-      text =~ /\A\/administrar_socios/ ||
-      text =~ /\A\/activar_socios/ ||
-      text =~ /\A\/desactivar_socios/
+      [
+        '/administrar_socios',
+        '/activar_socios',
+        '/desactivar_socios'
+      ].include?(text)
     end
 
     def should_step?
@@ -61,7 +63,7 @@ module BotCommand
           if LEVELS.flatten.include?(text)
             rower.save
             rower.update_column(:level, text)
-            send_message("@#{rower.username} ha sido activado y actualizado con el nivel #{rower.level}")
+            send_message("✅ @#{rower.username} ha sido activado y actualizado con el nivel #{rower.level}")
             send_state_message(rower, 'enable')
           else
             send_message("Formato de nivel no válido")
@@ -92,11 +94,11 @@ module BotCommand
 
     def send_state_message(rower, state)
       if state == 'enable'
-        message = "@#{user.username} ha activado tu cuenta con el nivel *#{rower.level}*.\nUsa /start para ver las opciones"
+        message = "🟢 @#{user.username} ha activado tu cuenta con el nivel *#{rower.level}*.\nUsa /start para ver las opciones"
         @api.call('sendMessage', chat_id: rower.telegram_id, text: message, reply_markup: nil, parse_mode: 'Markdown')
       end
       if state == 'disable'
-        message = "@#{user.username} ha desactivado tu cuenta. Si ha sido un error, escríbele por privado"
+        message = "🚫 @#{user.username} ha desactivado tu cuenta. Si ha sido un error, escríbele por privado"
         @api.call('sendMessage', chat_id: rower.telegram_id, text: message, reply_markup: nil, parse_mode: 'Markdown')
       end
     end

@@ -1,7 +1,9 @@
 module BotCommand
   class UserManageTraining < Base
     def should_start?
-      text =~ /\A\/crear_entrenamiento/
+      [
+        '/crear_entrenamiento',
+      ].include?(text)
     end
   end
 end
