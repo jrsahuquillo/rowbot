@@ -6,7 +6,8 @@ module BotCommand
         '/ver_entrenamientos',
         '/administrar_entrenamientos',
         '/administrar_socios',
-        '/unirse_entrenamiento'
+        '/unirse_entrenamiento',
+        '/salir_entrenamiento'
       ].include?(text)
     end
 
@@ -32,8 +33,8 @@ module BotCommand
       elsif user.enabled?
         actions = ['/ver_entrenamientos', '/mis_entrenamientos'], ['/unirse_entrenamiento', '/salir_entrenamiento']
         actions.unshift(['/administrar_entrenamientos'], ['/administrar_socios']) if user.admin?
-        send_message('Selecciona una opción:', set_markup(actions))
         user.reset_next_bot_command
+        send_message('Selecciona una opción:', set_markup(actions)) if text == '/start'
 
         case text
         when '/administrar_entrenamientos'
@@ -70,16 +71,30 @@ module BotCommand
             user_trainings.sort_by(&:date).each do |training|
               trainings <<  "#{training.title} - [#{training.users.size.to_s}/8]"
             end
-            send_message("Selecciona el entrenamiento al que quieres unirte", set_markup(trainings))
+            send_message("Selecciona el entrenamiento al que quieres unirte:", set_markup(trainings))
             user.set_next_bot_command('BotCommand::UserManageTraining')
             user.set_next_step('join_training')
+          else
+            send_message('No hay entrenamientos')
+          end
+
+        when '/salir_entrenamiento'
+          trainings = []
+          user_trainings = user.trainings
+          if user_trainings.present?
+            user_trainings.sort_by(&:date).each do |training|
+              trainings <<  "#{training.title} - [#{training.users.size.to_s}/8]"
+            end
+            send_message("Selecciona el entrenamiento del que quieres salir:", set_markup(trainings))
+            user.set_next_bot_command('BotCommand::UserManageTraining')
+            user.set_next_step('exit_training')
           else
             send_message('No hay entrenamientos')
           end
         end
 
       else
-        send_message('Espera a que un entrenador active tu cuenta.')
+        send_message('Espera a que un entrenador active tu cuenta. ⏳')
       end
     end
 
@@ -95,7 +110,7 @@ module BotCommand
           if user.enabled?
             self.start
           else
-            send_message('Espera a que un entrenador active tu cuenta. ⛔️') unless user.enabled?
+            send_message('Espera a que un entrenador active tu cuenta. ⏳') unless user.enabled?
             send_new_user_to_admins(user)
           end
           user.reset_step

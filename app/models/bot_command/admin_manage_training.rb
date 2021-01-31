@@ -36,7 +36,7 @@ module BotCommand
     end
 
     def start
-      return send_message('Espera a que un entrenador active tu cuenta. ⛔️') unless user.enabled?
+      return send_message('Espera a que un entrenador active tu cuenta. ⏳') unless user.enabled?
       case text
       when '/crear_entrenamiento'
         user.set_next_step('create_training/date')
@@ -117,7 +117,7 @@ module BotCommand
             new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, user_id: user.id)
             new_training.save
             user.reset_next_bot_command
-            send_message("Entrenamiento - *#{title}* creado", nil, 'Markdown')
+            send_message("✅ Has creado el entrenamiento *#{title}*", nil, 'Markdown')
             send_training_to_all_users(new_training)
           else
             send_message("Formato de género no válido")
@@ -327,14 +327,14 @@ module BotCommand
         markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
         "✅ El entrenamiento:\n *#{training.title}* ha sido creado por @#{admin.username}.\n ¿Te apuntas?"
       end
-      telegram_ids = User.pluck(:telegram_id)
+      telegram_ids = User.where(role: 'rower').pluck(:telegram_id)
       telegram_ids.each do |telegram_id|
         @api.call('sendMessage', chat_id: telegram_id, text: text, reply_markup: markup, parse_mode: 'Markdown')
       end
     end
 
     def send_message_to_rowers(training, message)
-      rowers_telegram_ids = training.users.pluck(:telegram_id)
+      rowers_telegram_ids = training.users.where(role: 'rower').pluck(:telegram_id)
       rowers_telegram_ids.each do |telegram_id|
         @api.call('sendMessage', chat_id: telegram_id, text: message, reply_markup: nil, parse_mode: 'Markdown')
       end
