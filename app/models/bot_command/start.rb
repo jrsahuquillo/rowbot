@@ -57,12 +57,13 @@ module BotCommand
             send_message('Próximos entrenamientos:')
             trainings_text = []
             trainings.sort_by(&:date).each do |training|
-              trainings_text << "*#{training.title}* - \[[#{training.users.size.to_s}/8\]]"
+              trainings_text << "➤ *#{training.title}* - \[[#{training.users.size.to_s}/8\]]"
             end
             send_message(trainings_text.map(&:inspect).join("\n").tr('\"', ''), nil, 'Markdown')
           else
             send_message('No hay entrenamientos')
           end
+          send_message('/start')
 
         when '/unirse_entrenamiento'
           gender = user.gender == "female" ? "Femenino" : "Masculino"

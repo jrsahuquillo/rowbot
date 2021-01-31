@@ -35,7 +35,7 @@ module BotCommand
             send_message('Ya te habías unido a este entrenamiento. 😝')
           else
             send_message('Ha habido algún error al tratar de unirte al entrenamiento. 🤷🏻‍♂️')
-          end          end
+          end
         else
           send_message('No se ha encontrado el entrenamiento. 🤷🏻‍♂️')
         end
@@ -85,7 +85,6 @@ module BotCommand
             send_message(rowers_text.map(&:inspect).join("\n").tr('\"', ''))
           end
         end
-
       end
 
       send_message('/start')
