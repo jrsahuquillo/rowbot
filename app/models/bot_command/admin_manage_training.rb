@@ -24,7 +24,8 @@ module BotCommand
                 'edit_training/date',
                 'edit_training/hour',
                 'edit_training/level',
-                'edit_training/gender'
+                'edit_training/gender',
+                'edit_training/boat'
               ]
 
       current_step = user.bot_command_data['step']
@@ -90,7 +91,7 @@ module BotCommand
         else
           send_message("Formato de hora no válida")
           user.reset_step
-          send_message('/start')
+          send_message('/start', set_remove_kb)
         end
         
       when 'create_training/level'
@@ -102,7 +103,7 @@ module BotCommand
           else
             send_message("Formato de nivel no válido")
             user.reset_step
-            send_message('/start')
+            send_message('/start', set_remove_kb)
           end
         end
 
@@ -115,7 +116,7 @@ module BotCommand
           else
             send_message("Formato de género no válido")
             user.reset_step
-            send_message('/start')
+            send_message('/start', set_remove_kb)
           end
         end
 
@@ -129,17 +130,17 @@ module BotCommand
             boat = text
             I18n.locale = :es
             formatted_date = I18n.l((date).to_time, format: :complete)
-            title = "#{formatted_date} > #{level} #{gender} #{boat}"
+            title = set_title(formatted_date, level, gender, boat)
             new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, boat: boat, user_id: user.id)
             new_training.save
             user.reset_next_bot_command
-            send_message("✅ Has creado el entrenamiento *#{title}*", nil, 'Markdown')
+            send_message("✅ Has creado el entrenamiento *#{title}*", "", 'Markdown')
             send_training_to_all_users(new_training)
           else
             send_message("Formato de embarcación no válida")
             user.reset_next_step
           end
-          send_message('/start')
+          send_message('/start', set_remove_kb)
         end
 
       when 'list_trainings'
@@ -158,7 +159,7 @@ module BotCommand
             end
             send_message(rowers_text.map(&:inspect).join("\n").tr('\"', ''))
           end
-          send_message('/start')
+          send_message('/start', set_remove_kb)
         end
 
       when 'delete_training'
@@ -175,7 +176,7 @@ module BotCommand
         else
           send_message("Entrenamiento no encontrado")
         end
-        send_message('/start')
+        send_message('/start', set_remove_kb)
 
       when 'edit_training'
         set_training(text)
@@ -183,7 +184,7 @@ module BotCommand
         if @training.present?
           user.set_temporary_data('training_tmp', @training.id)
           user.set_next_step('edit_training/attributes')
-          attributes = [["Fecha", "Hora"], ["Nivel", "Género"]]
+          attributes = [["Fecha", "Hora"], ["Nivel", "Género"], ["Embarcación", "Cancelar"]]
           send_message('Selecciona el dato que quieres editar', set_markup(attributes))
         end
 
@@ -207,6 +208,12 @@ module BotCommand
           when "Género"
             user.set_next_step('edit_training/gender')
             send_message('Introduce el nuevo género del entrenamiento:', set_markup(GENDERS))
+          when "Embarcación"
+            user.set_next_step('edit_training/boat')
+            send_message('Introduce la nueva embarcación del entrenamiento:', set_markup(GENDERS))
+          when "Cancelar"
+            user.reset_next_bot_command
+            send_message('/start', set_remove_kb, set_remove_kb)
           end
         end
 
@@ -219,8 +226,8 @@ module BotCommand
           if new_date
             training.date = training.date.change(year: new_date.year, month: new_date.month, day: new_date.day)
             I18n.locale = :es
-            formated_date = I18n.l((training.date).to_time, format: :complete)
-            training.title = "#{formated_date} > #{training.level} #{training.gender}"
+            formatted_date = I18n.l((training.date).to_time, format: :complete)
+            training.title = set_title(formatted_date, training.level, training.gender, training.boat)
             if training.save
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'date')
@@ -233,7 +240,7 @@ module BotCommand
         else
           send_message("Entrenamiento no encontrado")
         end
-        send_message('/start')
+        send_message('/start', set_remove_kb)
 
       when 'edit_training/hour'
         training_id = user.get_temporary_data('training_tmp')
@@ -243,8 +250,8 @@ module BotCommand
           if text =~ /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
             training.date = training.date.change(hour: text.split(':').first, min: text.split(':').last)
             I18n.locale = :es
-            formated_date = I18n.l((training.date).to_time, format: :complete)
-            training.title = "#{formated_date} > #{training.level} #{training.gender}"
+            formatted_date = I18n.l((training.date).to_time, format: :complete)
+            training.title = set_title(formatted_date, training.level, training.gender, training.boat)
             if training.save
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'hour')
@@ -257,7 +264,7 @@ module BotCommand
         else
           send_message("Entrenamiento no encontrado")
         end
-        send_message('/start')
+        send_message('/start', set_remove_kb)
 
       when 'edit_training/level'
         training_id = user.get_temporary_data('training_tmp')
@@ -267,8 +274,8 @@ module BotCommand
           if LEVELS.flatten.include?(text)
             training.level = text
             I18n.locale = :es
-            formated_date = I18n.l((training.date).to_time, format: :complete)
-            training.title = "#{formated_date} > #{text} #{training.gender}"
+            formatted_date = I18n.l((training.date).to_time, format: :complete)
+            training.title = set_title(formatted_date, training.level, training.gender, training.boat)
             if training.save
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'level')
@@ -281,7 +288,7 @@ module BotCommand
         else
           send_message("Entrenamiento no encontrado")
         end
-        send_message('/start')
+        send_message('/start', set_remove_kb)
 
       when 'edit_training/gender'
         training_id = user.get_temporary_data('training_tmp')
@@ -291,8 +298,8 @@ module BotCommand
           if GENDERS.flatten.include?(text)
             training.gender = text
             I18n.locale = :es
-            formated_date = I18n.l((training.date).to_time, format: :complete)
-            training.title = "#{formated_date} > #{training.level} #{text}"
+            formatted_date = I18n.l((training.date).to_time, format: :complete)
+            training.title = set_title(formatted_date, training.level, text, training.boat)
             if training.save
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'gender')
@@ -306,7 +313,32 @@ module BotCommand
         else
           send_message("Entrenamiento no encontrado")
         end
-        send_message('/start')
+        send_message('/start', set_remove_kb)
+
+      when 'edit_training/boat'
+        training_id = user.get_temporary_data('training_tmp')
+        training = Training.find(training_id)
+        user.reset_next_bot_command
+        if training.present?
+          if BOATS.flatten.include?(text)
+            training.gender = text
+            I18n.locale = :es
+            formatted_date = I18n.l((training.date).to_time, format: :complete)
+            training.title = set_title(formatted_date, training.level, training.gender, text)
+            if training.save
+              send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
+              send_training_to_all_users(training, 'boat')
+            else
+              send_message("No se pudo modificar el nivel del entrenamiento")
+            end
+
+          else
+            send_message("Formato de género no válido")
+          end
+        else
+          send_message("Entrenamiento no encontrado")
+        end
+        send_message('/start', set_remove_kb)
 
       end
 
@@ -362,6 +394,10 @@ module BotCommand
       end
     end
 
+    def set_title(date, level, gender, boat)
+      "#{date} > #{level} #{gender} #{boat}"
+    end
+
     def set_attribute_text(attribute)
       case attribute
       when "date"
@@ -372,6 +408,8 @@ module BotCommand
         "El género"
       when "level"
         "El nivel"
+      when "boat"
+        "La embarcación"
       end
     end
   end

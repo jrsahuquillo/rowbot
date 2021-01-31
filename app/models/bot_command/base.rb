@@ -24,8 +24,8 @@ module BotCommand
 
     protected
 
-    def send_message(text, markup=nil, parse_mode=nil, options={})
-      @api.call('sendMessage', chat_id: @user.telegram_id, text: text, reply_markup: markup, parse_mode: parse_mode)
+    def send_message(text, markup=nil, parse_mode=nil, remove_keyboard=true, options={})
+      @api.call('sendMessage', chat_id: @user.telegram_id, text: text, reply_markup: markup, parse_mode: parse_mode, remove_keyboard: remove_keyboard)
     end
 
     def text
@@ -38,6 +38,10 @@ module BotCommand
 
     def set_markup(actions)
       Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
+    end
+
+    def set_remove_kb
+      Telegram::Bot::Types::ReplyKeyboardRemove.new(remove_keyboard: true)
     end
   end
 end

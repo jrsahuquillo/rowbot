@@ -87,7 +87,7 @@ module BotCommand
         end
       end
 
-      send_message('/start')
+      send_message('/start', set_remove_kb)
       user.reset_next_bot_command
     end
   end
