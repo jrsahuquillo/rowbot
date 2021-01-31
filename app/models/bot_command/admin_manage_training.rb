@@ -133,7 +133,7 @@ module BotCommand
           send_message('Listado de remeras/os de este entrenamiento:')
           rowers = @training.users
           if rowers.size.zero?
-            send_message('Todavía no hay nadie apuntado a este entrenamiento')
+            send_message('Todavía no hay nadie apuntado a este entrenamiento. 🤷🏻‍♂️')
           else
             rowers_text = []
             rowers.each_with_index do |rower, index|
@@ -250,7 +250,9 @@ module BotCommand
         if training.present?
           if LEVELS.flatten.include?(text)
             training.level = text
-            training.title = "#{training.date} > #{text} #{training.gender}"
+            I18n.locale = :es
+            formated_date = I18n.l((training.date).to_time, format: :complete)
+            training.title = "#{formated_date} > #{text} #{training.gender}"
             if training.save
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'level')
@@ -272,7 +274,9 @@ module BotCommand
         if training.present?
           if GENDERS.flatten.include?(text)
             training.gender = text
-            training.title = "#{training.date} > #{training.level} #{text}"
+            I18n.locale = :es
+            formated_date = I18n.l((training.date).to_time, format: :complete)
+            training.title = "#{formated_date} > #{training.level} #{text}"
             if training.save
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'gender')
