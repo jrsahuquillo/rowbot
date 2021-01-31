@@ -5,7 +5,8 @@ module BotCommand
         '/start',
         '/ver_entrenamientos',
         '/administrar_entrenamientos',
-        '/administrar_socios'
+        '/administrar_socios',
+        '/unirse_entrenamiento'
       ].include?(text)
     end
 
@@ -60,7 +61,23 @@ module BotCommand
           else
             send_message('No hay entrenamientos')
           end
+
+        when '/unirse_entrenamiento'
+          gender = user.gender == "female" ? "Femenino" : "Masculino"
+          trainings = []
+          user_trainings = Training.where(level: user.level, gender: [gender, "Mixto"])
+          if user_trainings.present?
+            user_trainings.sort_by(&:date).each do |training|
+              trainings <<  "#{training.title} - [#{training.users.size.to_s}/8]"
+            end
+            send_message("Selecciona el entrenamiento al que quieres unirte", set_markup(trainings))
+            user.set_next_bot_command('BotCommand::UserManageTraining')
+            user.set_next_step('join_training')
+          else
+            send_message('No hay entrenamientos')
+          end
         end
+
       else
         send_message('Espera a que un entrenador active tu cuenta.')
       end

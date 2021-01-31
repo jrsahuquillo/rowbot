@@ -32,7 +32,7 @@ module BotCommand
       else
         user.reset_next_bot_command
         false
-      end        
+      end
     end
 
     def start
