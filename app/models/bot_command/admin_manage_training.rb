@@ -333,7 +333,7 @@ module BotCommand
           rower = User.find_by(telegram_id: telegram_id)
           rower.set_temporary_data('training_tmp', training.id)
           rower.set_next_bot_command('BotCommand::UserManageTraining')
-          rower.set_next_step('join_training/warn')
+          rower.set_next_step('join_training/notice')
         end
         @api.call('sendMessage', chat_id: telegram_id, text: text, reply_markup: markup, parse_mode: 'Markdown')
       end

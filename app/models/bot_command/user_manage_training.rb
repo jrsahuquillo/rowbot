@@ -7,7 +7,7 @@ module BotCommand
     def should_step?
       steps = [
         'join_training',
-        'join_training/warn',
+        'join_training/notice',
         'exit_training'
       ]
       current_step = user.bot_command_data['step']
@@ -41,7 +41,7 @@ module BotCommand
           send_message('No se ha encontrado el entrenamiento. 🤷🏻‍♂️')
         end
 
-      when 'join_training/warn'
+      when 'join_training/notice'
         if text == '¡Me apunto!'
           training_id = user.get_temporary_data('training_tmp')
           training = Training.find(training_id)
