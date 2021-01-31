@@ -213,7 +213,7 @@ module BotCommand
             send_message('Introduce la nueva embarcación del entrenamiento:', set_markup(GENDERS))
           when "Cancelar"
             user.reset_next_bot_command
-            send_message('/start', set_remove_kb, set_remove_kb)
+            send_message('/start', set_remove_kb)
           end
         end
 

@@ -53,8 +53,8 @@ module BotCommand
           send_message("Indica el nivel #{rower_text}", set_markup(LEVELS))
         else
           send_message("El usuario no ha sido localizado")
+          send_message('/start', set_remove_kb)
         end
-        send_message('/start', set_remove_kb)
 
       when 'set_users_level'
         rower_id = user.get_temporary_data('rower_it_tmp')
