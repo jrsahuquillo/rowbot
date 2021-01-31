@@ -7,6 +7,7 @@ module BotCommand
     def should_step?
       steps = [
         'join_training',
+        'join_training/warn',
         'exit_training'
       ]
       current_step = user.bot_command_data['step']
@@ -39,7 +40,18 @@ module BotCommand
         else
           send_message('No se ha encontrado el entrenamiento. 🤷🏻‍♂️')
         end
-        send_message('/start')
+
+      when 'join_training/warn'
+        if text == '¡Me apunto!'
+          training_id = user.get_temporary_data('training_tmp')
+          training = Training.find(training_id)
+          user_training = UserTraining.new(user_id: user.id, training_id: training_id)
+          if user_training.save
+            send_message("🚣🏻 Te has unido al entrenamiento *#{training.title}*", nil, 'Markdown')
+          else
+            send_message('Ha habido algún error al tratar de unirte al entrenamiento. 🤷🏻‍♂️')
+          end
+        end
 
       when 'exit_training'
         user.reset_next_bot_command
@@ -54,9 +66,10 @@ module BotCommand
         else
           send_message('No se ha encontrado el entrenamiento. 🤷🏻‍♂️')
         end
-        send_message('/start')
-
       end
+
+      send_message('/start')
+      user.reset_next_bot_command
     end
   end
 end

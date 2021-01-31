@@ -323,18 +323,24 @@ module BotCommand
         attribute_text = set_attribute_text(attribute)
         "⚠️ *#{attribute_text}* del entrenamiento:\n*#{training.title}*\nha sido actualizado por @#{admin.username}."
       else
-        actions = ["¡Me apunto!", "No me apunto"]
+        actions = ["¡Me apunto!"]
         markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
         "✅ El entrenamiento:\n *#{training.title}* ha sido creado por @#{admin.username}.\n ¿Te apuntas?"
       end
-      telegram_ids = User.where(role: 'rower').pluck(:telegram_id)
+      telegram_ids = User.pluck(:telegram_id) - [admin.telegram_id]
       telegram_ids.each do |telegram_id|
+        unless attribute
+          rower = User.find_by(telegram_id: telegram_id)
+          rower.set_temporary_data('training_tmp', training.id)
+          rower.set_next_bot_command('BotCommand::UserManageTraining')
+          rower.set_next_step('join_training/warn')
+        end
         @api.call('sendMessage', chat_id: telegram_id, text: text, reply_markup: markup, parse_mode: 'Markdown')
       end
     end
 
     def send_message_to_rowers(training, message)
-      rowers_telegram_ids = training.users.where(role: 'rower').pluck(:telegram_id)
+      rowers_telegram_ids = training.users.pluck(:telegram_id) - [training.user.telegram_id]
       rowers_telegram_ids.each do |telegram_id|
         @api.call('sendMessage', chat_id: telegram_id, text: message, reply_markup: nil, parse_mode: 'Markdown')
       end
