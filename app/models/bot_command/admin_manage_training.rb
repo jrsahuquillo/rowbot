@@ -112,7 +112,7 @@ module BotCommand
           user.set_next_step('create_training/boat')
           if GENDERS.flatten.include?(text)
             user.set_temporary_data('gender_tmp', text)
-            send_message('♀Introduce la embarcació del entrenamiento:', set_markup(BOATS))
+            send_message('♀Introduce la embarcación del entrenamiento:', set_markup(BOATS))
           else
             send_message("Formato de género no válido")
             user.reset_step
@@ -375,7 +375,7 @@ module BotCommand
         markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
         "✅ El entrenamiento:\n *#{training.title}* ha sido creado por @#{admin.username}.\n ¿Te apuntas?"
       end
-      telegram_ids = User.pluck(:telegram_id) - [admin.telegram_id]
+      telegram_ids = User.enabled.pluck(:telegram_id) - [admin.telegram_id]
       telegram_ids.each do |telegram_id|
         unless attribute
           rower = User.find_by(telegram_id: telegram_id)
@@ -388,7 +388,7 @@ module BotCommand
     end
 
     def send_message_to_rowers(training, message)
-      rowers_telegram_ids = training.users.pluck(:telegram_id) - [training.user.telegram_id]
+      rowers_telegram_ids = training.users.enabled.pluck(:telegram_id) - [training.user.telegram_id]
       rowers_telegram_ids.each do |telegram_id|
         @api.call('sendMessage', chat_id: telegram_id, text: message, reply_markup: nil, parse_mode: 'Markdown')
       end

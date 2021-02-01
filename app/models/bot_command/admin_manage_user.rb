@@ -46,22 +46,29 @@ module BotCommand
         rower = User.find_by(username: text.split(' ').first)
         user.reset_step
         if rower.present?
-          user.set_temporary_data('rower_it_tmp', rower.id)
-          user.set_next_step('set_users_level')
           rower.update_column(:enabled, true)
-          rower_text = rower.gender == "female" ? "de la remera" : "del remero"
-          send_message("Indica el nivel #{rower_text}", set_markup(LEVELS))
+          if rower.level.present?
+            rower.reset_next_bot_command
+            user.reset_next_bot_command
+            send_message("✅ @#{rower.username} ha sido activado con el nivel #{rower.level}")
+            send_state_message(rower, 'enable')
+            send_message('/start', set_remove_kb)
+          else
+            user.set_temporary_data('rower_id_tmp', rower.id)
+            user.set_next_step('set_users_level')
+            rower_text = rower.gender == "female" ? "de la remera" : "del remero"
+            send_message("Indica el nivel #{rower_text}", set_markup(LEVELS))
+          end
         else
           send_message("El usuario no ha sido localizado")
           send_message('/start', set_remove_kb)
         end
 
       when 'set_users_level'
-        rower_id = user.get_temporary_data('rower_it_tmp')
+        rower_id = user.get_temporary_data('rower_id_tmp')
         rower = User.find(rower_id)
         if rower.present?
           if LEVELS.flatten.include?(text)
-            rower.save
             rower.update_column(:level, text)
             send_message("✅ @#{rower.username} ha sido activado y actualizado con el nivel #{rower.level}")
             send_state_message(rower, 'enable')
@@ -94,7 +101,7 @@ module BotCommand
 
     def send_state_message(rower, state)
       if state == 'enable'
-        message = "🟢 @#{user.username} ha activado tu cuenta con el nivel *#{rower.level}*.\nUsa /start para ver las opciones"
+        message = "✅ @#{user.username} ha activado tu cuenta con el nivel *#{rower.level}*.\nUsa /start para ver las opciones"
         @api.call('sendMessage', chat_id: rower.telegram_id, text: message, reply_markup: nil, parse_mode: 'Markdown')
       end
       if state == 'disable'

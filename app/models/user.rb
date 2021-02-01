@@ -4,6 +4,8 @@ class User < ApplicationRecord
 
   validates_uniqueness_of :telegram_id
 
+  scope :enabled, -> { where(enabled: true) }
+
   def admin?
     self.role == 'admin'
   end
