@@ -24,8 +24,8 @@ module BotCommand
 
     protected
 
-    def send_message(text, markup=nil, parse_mode=nil, remove_keyboard=true, options={})
-      @api.call('sendMessage', chat_id: @user.telegram_id, text: text, reply_markup: markup, parse_mode: parse_mode, remove_keyboard: remove_keyboard)
+    def send_message(text, markup=nil, parse_mode=nil, options={})
+      @api.call('sendMessage', chat_id: @user.telegram_id, text: text, reply_markup: markup, parse_mode: parse_mode)
     end
 
     def text
