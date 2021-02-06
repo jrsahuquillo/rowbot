@@ -1,15 +1,16 @@
 module BotCommand
   class Start < Base
     def should_start?
-      [
-        '/start',
-        '/ver_entrenamientos',
-        '/administrar_entrenamientos',
-        '/administrar_socios',
-        '/unirse_entrenamiento',
-        '/salir_entrenamiento',
-        '/mis_entrenamientos'
-      ].include?(text)
+      commands = [
+                  '/start',
+                  '/ver_entrenamientos',
+                  '/unirse_entrenamiento',
+                  '/salir_entrenamiento',
+                  '/mis_entrenamientos'
+                ]
+        commands << '/administrar_entrenamientos' if user.trainer? || user.admin?
+        commands << '/administrar_socios' if user.admin?
+      commands.include?(text)
     end
 
     def should_step?
@@ -39,9 +40,9 @@ module BotCommand
 
         case text
         when '/administrar_entrenamientos'
-            actions = ['/crear_entrenamiento', '/editar_entrenamiento'], ['/ver_entrenamientos', '/borrar_entrenamiento']
-            send_message('Administrar entrenamientos:', set_markup(actions))
-            user.set_next_bot_command('BotCommand::AdminManageTraining')
+          actions = ['/crear_entrenamiento', '/editar_entrenamiento'], ['/ver_entrenamientos', '/borrar_entrenamiento']
+          send_message('Administrar entrenamientos:', set_markup(actions))
+          user.set_next_bot_command('BotCommand::AdminManageTraining')
 
         when '/administrar_socios'
           actions = []

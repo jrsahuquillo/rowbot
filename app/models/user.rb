@@ -10,6 +10,10 @@ class User < ApplicationRecord
     self.role == 'admin'
   end
 
+  def trainer?
+    self.role == 'trainer'
+  end
+
   def set_next_bot_command(command)
     self.bot_command_data['command'] = command
     save
