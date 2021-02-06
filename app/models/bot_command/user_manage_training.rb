@@ -70,7 +70,7 @@ module BotCommand
           end
 
         when 'list_my_trainings'
-          training = Training.find_by(title: text.split(" - ").first)
+          training = Training.find_by(title: text.split(" - ").first[3..-1])
           user.reset_step
           if training.present?
             send_message('Listado de remeras/os de este entrenamiento:')
@@ -90,7 +90,7 @@ module BotCommand
       else
         send_message('Espera a que un entrenador active tu cuenta. ⏳')
       end
-      
+
       send_message('/start', set_remove_kb)
       user.reset_next_bot_command
     end
