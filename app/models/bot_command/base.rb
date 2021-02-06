@@ -6,6 +6,7 @@ module BotCommand
     LEVELS = [["Iniciación", "Fitness"], ["Competición", "Paralímpico"]]
     GENDERS = ["Mixto", "Femenino", "Masculino"]
     BOATS = [["Falucho", "Llaüt"], ["Yola", "Dos de Mar"]]
+    ROLES = [["Entrenador/a", "Remero/a"]]
 
     def initialize(user, message)
       @user = user
