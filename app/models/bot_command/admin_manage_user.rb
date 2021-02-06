@@ -128,16 +128,16 @@ module BotCommand
       case user.role
       when 'trainer'
         case user.gender
-        when male
+        when 'male'
           return "Entrenador"
-        when female
+        when 'female'
           return "Entrenadora"
         end
       when 'rower'
         case user.gender
-        when male
+        when 'male'
           return "Remero"
-        when female
+        when 'female'
           return "Remera"
         end
       end
