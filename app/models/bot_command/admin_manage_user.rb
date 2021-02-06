@@ -115,7 +115,7 @@ module BotCommand
 
     def send_state_message(rower, state)
       if state == 'enable'
-        message = "✅ @#{user.username} ha activado tu cuenta con el nivel *#{rower.level}* como *#{role_text(user)}*.\nUsa /start para ver las opciones"
+        message = "✅ @#{user.username} ha activado tu cuenta con el nivel *#{rower.level}* como *#{role_text(rower)}*.\nUsa /start para ver las opciones"
         @api.call('sendMessage', chat_id: rower.telegram_id, text: message, reply_markup: nil, parse_mode: 'Markdown')
       end
       if state == 'disable'
