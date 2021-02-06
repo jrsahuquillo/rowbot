@@ -87,6 +87,7 @@ module BotCommand
         user.reset_step
         if rower.present?
           rower.update_column(:enabled, false)
+          rower.update_column(:level, nil)
           send_message("@#{rower.username} ha sido desactivado")
           send_state_message(rower, 'disable')
           rower.reset_next_bot_command
