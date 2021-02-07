@@ -2,7 +2,7 @@
 lock '3.4.0'
 
 def deploysecret(key)
-  @deploy_secrets_yml ||= YAML.load_file('config/deploy-secrets.yml')[fetch(:stage).to_s]
+  @deploy_secrets_yml ||= YAML.load_file('config/deploy-secrets.yml')['production']
   @deploy_secrets_yml[key.to_s]
 end
 
@@ -25,7 +25,7 @@ set :use_sudo, false
 set :linked_files, %w{config/database.yml config/secrets.yml}
 set :linked_dirs, %w{log tmp public/system public/assets}
 
-set :keep_releases, 10
+set :keep_releases, 5
 
 set :local_user, ENV['USER']
 set :deploy_user, deploysecret(:user)
