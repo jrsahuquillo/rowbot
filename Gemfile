@@ -30,6 +30,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem 'telegram-bot-ruby'
 gem 'pry'
 gem 'amazing_print'
+gem 'unicorn'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -37,14 +38,21 @@ group :development, :test do
 end
 
 group :development do
-  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'web-console', '>= 4.1.0'
+  gem 'airbrussh', require: false
+  gem 'capistrano', '~> 3.4.0'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails', github: 'capistrano/rails'
+  gem 'capistrano-rails-console'
+  gem 'capistrano-sidekiq'
+  gem 'listen', '~> 3.3'
+  gem 'rvm1-capistrano3', require: false
   # Display performance information such as SQL time and flame graphs for each request in your browser.
   # Can be configured to work on production as well see: https://github.com/MiniProfiler/rack-mini-profiler/blob/master/README.md
   gem 'rack-mini-profiler', '~> 2.0'
-  gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'spring'
+  gem 'web-console', '>= 4.1.0'
 end
 
 group :test do
