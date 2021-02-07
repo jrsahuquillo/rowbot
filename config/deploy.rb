@@ -2,7 +2,7 @@
 lock '3.4.0'
 
 def deploysecret(key)
-  @deploy_secrets_yml ||= YAML.load_file('config/deploy-secrets.yml')['production']
+  @deploy_secrets_yml ||= YAML.load_file('config/deploy-secrets.yml')[fetch(:stage).to_s]
   @deploy_secrets_yml[key.to_s]
 end
 
@@ -22,7 +22,7 @@ set :log_level, :info
 set :pty, true
 set :use_sudo, false
 
-set :linked_files, %w{config/database.yml config/secrets.yml config/master.key}
+set :linked_files, %w{config/database.yml config/secrets.yml config/master.key config/credentials.yml.enc}
 set :linked_dirs, %w{log tmp public/system public/assets}
 
 set :keep_releases, 5
@@ -43,6 +43,7 @@ set(:config_files, %w(
   nginx.conf
   unicorn_init.sh
   master.key
+  credentials.yml.enc
 ))
 
 set(:symlinks, [
