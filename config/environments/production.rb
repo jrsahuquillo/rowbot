@@ -2,7 +2,7 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-  config.action_controller.default_url_options = { host: 'myproduction.com' }
+  config.action_controller.default_url_options = { host: '104.248.255.43' }
   # Code is not reloaded between requests.
   config.cache_classes = true
 
