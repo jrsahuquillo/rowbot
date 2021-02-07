@@ -31,6 +31,7 @@ gem 'telegram-bot-ruby'
 gem 'pry'
 gem 'amazing_print'
 gem 'unicorn'
+gem 'rake'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
