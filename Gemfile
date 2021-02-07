@@ -39,7 +39,7 @@ end
 
 group :development do
   gem 'airbrussh', require: false
-  gem 'capistrano', '~> 3.4.0'
+  gem 'capistrano', '3.4.0'
   gem 'capistrano-bundler'
   gem 'capistrano-rails', github: 'capistrano/rails'
   gem 'capistrano-rails-console'
