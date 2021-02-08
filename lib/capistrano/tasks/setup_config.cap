@@ -3,8 +3,6 @@ namespace :deploy do
     on roles(:app) do
       # make the config dir
       execute :mkdir, "-p #{shared_path}/config"
-      upload! "config/master.key", "#{shared_path}/config/master.key"
-      sudo :chmod, "600", "#{shared_path}/config/master.key"
       full_app_name = fetch(:full_app_name)
 
       # config files to be uploaded to shared/config, see the

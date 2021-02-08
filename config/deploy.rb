@@ -23,8 +23,6 @@ set :pty, true
 set :use_sudo, false
 
 set :linked_files, %w{config/database.yml config/secrets.yml}
-set :linked_files, fetch(:linked_files, []).push("config/master.key")
-set :linked_files, fetch(:linked_files, []).push("config/credentials.yml.enc")
 set :linked_dirs, %w{log tmp public/system public/assets}
 
 set :keep_releases, 5
@@ -44,8 +42,6 @@ set(:config_files, %w(
   sidekiq.yml
   nginx.conf
   unicorn_init.sh
-  master.key
-  credentials.yml.enc
 ))
 
 set(:symlinks, [
