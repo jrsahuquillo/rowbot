@@ -7,9 +7,9 @@
 #   )
 # end
 
-credentials = Rails.application.credentials.send(Rails.env)
+secrets = Rails.application.secrets
 host = Rails.application.config.action_controller.default_url_options[:host]
-uri = URI("https://api.telegram.org/bot#{credentials[:bot_token]}/setWebhook?url=#{host}/telegram_#{credentials[:telegram_token]}")
+uri = URI("https://api.telegram.org/bot#{secrets[:bot_token]}/setWebhook?url=#{host}/telegram_#{secrets[:telegram_token]}")
 response = Net::HTTP.get(uri)
 json_response = JSON.parse(response)
 Rails.logger.info("Webhook status: #{json_response['description']}")

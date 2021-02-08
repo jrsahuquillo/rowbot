@@ -11,7 +11,7 @@ module BotCommand
     def initialize(user, message)
       @user = user
       @message = message
-      token = Rails.application.credentials.send(Rails.env).dig(:bot_token)
+      token = Rails.application.secrets.dig(:bot_token)
       @api = ::Telegram::Bot::Api.new(token)
     end
 
