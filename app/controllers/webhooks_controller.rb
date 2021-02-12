@@ -1,6 +1,10 @@
 class WebhooksController < ApplicationController
   skip_before_action :verify_authenticity_token
 
+  def main
+    @text = "RowBot is online"
+  end
+
   def callback
     dispatcher.new(webhook, user).process
     render body: nil, head: :ok
