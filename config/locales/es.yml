@@ -23,6 +23,8 @@ es:
       - nov
       - dic
   manage_trainings:
+    exit:
+      error: 'Ha habido algún error al tratar de salirte del entrenamiento. 🤷🏻‍♂️'
     insert:
       boat: '🚣🏻‍♂️ Introduce la embarcación del entrenamiento:'
       hour: '🕑 Introduce la hora del entrenamiento (HH:MM):'
@@ -35,9 +37,14 @@ es:
       date: '🗓 Introduce el nuevo día del entrenamiento:'
       gender: '♀︎♂︎ Introduce el nuevo género del entrenamiento:'
       level: '💪🏻 Introduce el nuevo nivel del entrenamiento:'
+    join:
+      already: 'Ya te habías unido a este entrenamiento. 😝'
+      error: 'Ha habido algún error al tratar de unirte al entrenamiento. 🤷🏻‍♂️'
     manage_trainings: 'Administrar entrenamientos:'
-    not_created_trainings: 'No hay entrenamientos creados.'
-    not_found: 'Entrenamiento no encontrado.'
+    nobody_joined: 'Todavía no se ha unido nadie a este entrenamiento. 🤷🏻‍♂️'
+    not_created_trainings: 'No hay entrenamientos creados. 🤷🏻‍♂️'
+    not_deleted: 'El entrenamiento no se ha podido eliminar. 🤷🏻‍♂️'
+    not_found: 'No se ha encontrado el entrenamiento. 🤷🏻‍♂️'
     not_modified:
       boat: '❌ No se pudo modificar la embarcación del entrenamiento'
       hour: '❌ No se pudo modificar la hora del entrenamiento'
@@ -49,6 +56,7 @@ es:
       gender: '❌ Formato de género no válido'
       hour: '❌ Formato de hora no válida'
       level: '❌ Formato de nivel no válido'
+    rowers_list: 'Listado de remeras/os de este entrenamiento:'
     select_edit_data: 'Selecciona el dato que quieres editar:'
     select_trainings:
       delete: 'Selecciona qué entrenamiento quieres eliminar:'
@@ -62,7 +70,7 @@ es:
     insert_username: 'Por favor, añade tu *username* en la configuración de Telegram'
     next_trainings: 'Próximos entrenamientos:'
     not_trainings: 'No hay entrenamientos.'
-    not_in_trainings: 'No estás en ningún entrenamiento'
+    not_in_trainings: 'No estás en ningún entrenamiento.'
     options: 'Opciones:'
     option_select: 'Selecciona una opción:'
     which_rower_gender: '¿Eres remero o remera?:'

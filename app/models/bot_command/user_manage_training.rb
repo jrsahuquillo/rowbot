@@ -33,12 +33,12 @@ module BotCommand
             if user_training.save
               send_message("🚣🏻 Te has unido al entrenamiento *#{training.title}*", nil, 'Markdown')
             elsif user_training.errors.full_messages == ["User has already been taken"]
-              send_message('Ya te habías unido a este entrenamiento. 😝')
+              send_message(I18n.t('manage_trainings.join.already'))
             else
-              send_message('Ha habido algún error al tratar de unirte al entrenamiento. 🤷🏻‍♂️')
+              send_message(I18n.t('manage_trainings.join.error'))
             end
           else
-            send_message('No se ha encontrado el entrenamiento. 🤷🏻‍♂️')
+            send_message(I18n.t('manage_trainings.not_found'))
           end
 
         when 'join_training/notice'
@@ -49,9 +49,9 @@ module BotCommand
             if user_training.save
               send_message("🚣🏻 Te has unido al entrenamiento *#{training.title}*", nil, 'Markdown')
             elsif user_training.errors.full_messages == ["User has already been taken"]
-              send_message('Ya te habías unido a este entrenamiento. 😝')
+              send_message(I18n.t('manage_trainings.join.already'))
             else
-              send_message('Ha habido algún error al tratar de unirte al entrenamiento. 🤷🏻‍♂️')
+              send_message(I18n.t('manage_trainings.join.error'))
             end
           end
 
@@ -63,20 +63,20 @@ module BotCommand
             if user_training.destroy
               send_message("🥺 Has salido del entrenamiento *#{training.title}*", nil, 'Markdown')
             else
-              send_message('Ha habido algún error al tratar de salirte del entrenamiento. 🤷🏻‍♂️')
+              send_message(I18n.t('manage_trainings.exit.error'))
             end
           else
-            send_message('No se ha encontrado el entrenamiento. 🤷🏻‍♂️')
+            send_message(I18n.t('manage_trainings.not_found'))
           end
 
         when 'list_my_trainings'
           training = Training.find_by(title: text.split(" - ").first[3..-1])
           user.reset_step
           if training.present?
-            send_message('Listado de remeras/os de este entrenamiento:')
+            send_message(I18n.t('manage_trainings.rowers_list'))
             rowers = training.users
             if rowers.size.zero?
-              send_message('Todavía no hay nadie apuntado a este entrenamiento. 🤷🏻‍♂️')
+              send_message(I18n.t('manage_trainings.nobody_joined'))
             else
               rowers_text = []
               rowers.each_with_index do |rower, index|

@@ -146,10 +146,10 @@ module BotCommand
         set_training(text)
         user.reset_step
         if @training.present?
-          send_message('Listado de remeras/os de este entrenamiento:')
+          send_message(I18n.t('manage_trainings.rowers_list'))
           rowers = @training.users
           if rowers.size.zero?
-            send_message('Todavía no hay nadie apuntado a este entrenamiento. 🤷🏻‍♂️')
+            send_message(I18n.t('manage_trainings.nobody_joined'))
           else
             rowers_text = []
             rowers.each_with_index do |rower, index|
@@ -170,7 +170,7 @@ module BotCommand
             send_message(message, nil, 'Markdown')
             send_message_to_rowers(@training, message) if @training.users
           else
-            send_message("El entrenamiento no se ha podido eliminar")
+            send_message(I18n.t('manage_trainings.not_deleted'))
           end
         else
           send_message(I18n.t('manage_trainings.not_found'))
