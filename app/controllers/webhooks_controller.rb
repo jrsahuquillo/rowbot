@@ -1,8 +1,16 @@
 class WebhooksController < ApplicationController
+  helper_method :main
   skip_before_action :verify_authenticity_token
 
   def main
-    @text = "RowBot is online"
+    secrets = Rails.application.secrets
+    host = Rails.application.config.action_controller.default_url_options[:host]
+    uri = URI("https://api.telegram.org/bot#{secrets[:bot_token]}/setWebhook?url=#{host}/telegram_#{secrets[:telegram_token]}")
+    response = Net::HTTP.get(uri)
+    json_response = JSON.parse(response)
+    Rails.logger.info("Webhook status: #{json_response['description']}")
+    status = JSON.parse(response)['ok'] == true ? "online" : "offline"
+    @main = "Rowbot is #{status}"
   end
 
   def callback

@@ -25,5 +25,8 @@ module Rowbot
     #     resource '*', headers: :any, methods: [:get, :post]
     #   end
     # end
+    config.after_initialize do
+      WebhooksController.new().main
+    end
   end
 end
