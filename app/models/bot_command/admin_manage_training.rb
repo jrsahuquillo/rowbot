@@ -38,37 +38,37 @@ module BotCommand
     end
 
     def start
-      return send_message('Espera a que un entrenador active tu cuenta. ⏳') unless user.enabled?
+      return send_message(I18n.t('start.wait_activation')) unless user.enabled?
       case text
       when '/crear_entrenamiento'
         user.set_next_step('create_training/date')
-        send_message('🗓 Introduce día del entrenamiento:', set_markup(generate_dates))
+        send_message(I18n.t('manage_trainings.insert.date'), set_markup(generate_dates))
 
       when '/ver_entrenamientos'
         user.set_next_step('list_trainings')
         set_trainings
         if @trainings.present?
-          send_message('Selecciona qué entrenamiento quieres ver:', set_markup(@trainings))
+          send_message(I18n.t('manage_trainings.select_trainings.show'), set_markup(@trainings))
         else
-          send_message('No hay entrenamientos creados')
+          send_message(I18n.t('manage_trainings.not_created_trainings'))
         end
 
       when '/borrar_entrenamiento'
         user.set_next_step('delete_training')
         set_trainings
         if @trainings.present?
-          send_message('Selecciona qué entrenamiento quieres eliminar:', set_markup(@trainings))
+          send_message(I18n.t('manage_trainings.select_trainings.delete'), set_markup(@trainings))
         else
-          send_message('No hay entrenamientos creados')
+          send_message(I18n.t('manage_trainings.not_created_trainings'))
         end
 
       when '/editar_entrenamiento'
         user.set_next_step('edit_training')
         set_trainings
         if @trainings.present?
-          send_message('Selecciona qué entrenamiento quieres editar:', set_markup(@trainings))
+          send_message(I18n.t('manage_trainings.select_trainings.edit'), set_markup(@trainings))
         else
-          send_message('No hay entrenamientos creados')
+          send_message(I18n.t('manage_trainings.not_created_trainings'))
         end
       end
     end
@@ -79,7 +79,7 @@ module BotCommand
         user.set_temporary_data('date_tmp', text)
         user.set_next_step('create_training/hour')
         hours = [ "18:00", "18:30"], [ "19:00", "19:30"], ["20:00", "20:30"]
-        send_message('🕑 Introduce la hora del entrenamiento (HH:MM):', set_markup(hours))
+        send_message(I18n.t('manage_trainings.insert.hour'), set_markup(hours))
         
       when 'create_training/hour'
         user.set_next_step('create_training/level')
@@ -87,7 +87,7 @@ module BotCommand
           hour = text
           date = user.get_temporary_data('date_tmp')
           user.set_temporary_data('full_date_tmp', DateTime.parse("#{date} #{hour}") )
-          send_message('💪🏻 Introduce el nivel del entrenamiento:', set_markup(LEVELS))
+          send_message(I18n.t('manage_trainings.insert.level'), set_markup(LEVELS))
         else
           send_message("Formato de hora no válida")
           user.reset_step
@@ -99,7 +99,7 @@ module BotCommand
           user.set_next_step('create_training/gender')
           if LEVELS.flatten.include?(text)
             user.set_temporary_data('level_tmp', text)
-            send_message('♀︎♂︎ Introduce el género del entrenamiento:', set_markup(GENDERS))
+            send_message(I18n.t('manage_trainings.insert.gender'), set_markup(GENDERS))
           else
             send_message("Formato de nivel no válido")
             user.reset_step
@@ -112,7 +112,7 @@ module BotCommand
           user.set_next_step('create_training/boat')
           if GENDERS.flatten.include?(text)
             user.set_temporary_data('gender_tmp', text)
-            send_message('♀Introduce la embarcación del entrenamiento:', set_markup(BOATS))
+            send_message(I18n.t('manage_trainings.insert.boat'), set_markup(BOATS))
           else
             send_message("Formato de género no válido")
             user.reset_step
@@ -128,7 +128,6 @@ module BotCommand
         if date.present? && level.present? && gender.present?
           if BOATS.flatten.include?(text)
             boat = text
-            I18n.locale = :es
             formatted_date = I18n.l((date).to_time, format: :complete)
             title = set_title(formatted_date, level, gender, boat)
             new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, boat: boat, user_id: user.id)
@@ -225,7 +224,6 @@ module BotCommand
           new_date = text.to_datetime rescue nil
           if new_date
             training.date = training.date.change(year: new_date.year, month: new_date.month, day: new_date.day)
-            I18n.locale = :es
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, training.gender, training.boat)
             if training.save
@@ -249,7 +247,6 @@ module BotCommand
         if training.present?
           if text =~ /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
             training.date = training.date.change(hour: text.split(':').first, min: text.split(':').last)
-            I18n.locale = :es
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, training.gender, training.boat)
             if training.save
@@ -273,7 +270,6 @@ module BotCommand
         if training.present?
           if LEVELS.flatten.include?(text)
             training.level = text
-            I18n.locale = :es
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, training.gender, training.boat)
             if training.save
@@ -297,7 +293,6 @@ module BotCommand
         if training.present?
           if GENDERS.flatten.include?(text)
             training.gender = text
-            I18n.locale = :es
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, text, training.boat)
             if training.save
@@ -322,7 +317,6 @@ module BotCommand
         if training.present?
           if BOATS.flatten.include?(text)
             training.gender = text
-            I18n.locale = :es
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, training.gender, text)
             if training.save
@@ -349,7 +343,6 @@ module BotCommand
     end
 
     def generate_dates
-      I18n.locale = :es
       dates = []
       (0..6).each{|i| dates << I18n.l((Date.today + i.day).to_time, format: :long)}
       dates

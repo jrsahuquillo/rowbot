@@ -22,9 +22,34 @@ es:
       - oct
       - nov
       - dic
+  manage_trainings:
+    insert:
+      boat: '🚣🏻‍♂️ Introduce la embarcación del entrenamiento:'
+      hour: '🕑 Introduce la hora del entrenamiento (HH:MM):'
+      date: '🗓 Introduce día del entrenamiento:'
+      gender: '♀︎♂︎ Introduce el género del entrenamiento:'
+      level: '💪🏻 Introduce el nivel del entrenamiento:'
+    manage_trainings: 'Administrar entrenamientos:'
+    not_created_trainings: 'No hay entrenamientos creados.'
+    select_trainings:
+      delete: 'Selecciona qué entrenamiento quieres eliminar:'
+      edit: 'Selecciona qué entrenamiento quieres editar:'
+      show: 'Selecciona qué entrenamiento quieres ver:'
+  start:
+    select_trainings:
+      exit: 'Selecciona el entrenamiento del que quieres salir:'
+      join: 'Selecciona el entrenamiento al que quieres unirte:'
+      show: 'Selecciona qué entrenamiento quieres ver:'
+    insert_username: 'Por favor, añade tu *username* en la configuración de Telegram'
+    next_trainings: 'Próximos entrenamientos:'
+    not_trainings: 'No hay entrenamientos.'
+    not_in_trainings: 'No estás en ningún entrenamiento'
+    options: 'Opciones:'
+    option_select: 'Selecciona una opción:'
+    which_rower_gender: '¿Eres remero o remera?:'
+    wait_activation: 'Espera a que un entrenador active tu cuenta. ⏳'
   time:
     formats:
-      # long: '%A, %B %d, %Y'
       long: '%A, %d/%B/%Y'
       complete: '%A, %d/%B/%Y a las %H:%M'
-      short: '%b %d, %Y'
+  unknown_command: 'Comando desconocido. Usa /start para ver las opciones.'

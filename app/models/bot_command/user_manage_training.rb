@@ -88,7 +88,7 @@ module BotCommand
           end
         end
       else
-        send_message('Espera a que un entrenador active tu cuenta. ⏳')
+        send_message(I18n.t('start.wait_activation'))
       end
 
       send_message('/start', set_remove_kb)
