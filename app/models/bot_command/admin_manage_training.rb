@@ -89,7 +89,7 @@ module BotCommand
           user.set_temporary_data('full_date_tmp', DateTime.parse("#{date} #{hour}") )
           send_message(I18n.t('manage_trainings.insert.level'), set_markup(LEVELS))
         else
-          send_message("Formato de hora no válida")
+          send_message(I18n.t('manage_trainings.not_valid_format.hour'))
           user.reset_step
           send_message('/start', set_remove_kb)
         end
@@ -101,7 +101,7 @@ module BotCommand
             user.set_temporary_data('level_tmp', text)
             send_message(I18n.t('manage_trainings.insert.gender'), set_markup(GENDERS))
           else
-            send_message("Formato de nivel no válido")
+            send_message(I18n.t('manage_trainings.not_valid_format.level'))
             user.reset_step
             send_message('/start', set_remove_kb)
           end
@@ -114,7 +114,7 @@ module BotCommand
             user.set_temporary_data('gender_tmp', text)
             send_message(I18n.t('manage_trainings.insert.boat'), set_markup(BOATS))
           else
-            send_message("Formato de género no válido")
+            send_message(I18n.t('manage_trainings.not_valid_format.gender'))
             user.reset_step
             send_message('/start', set_remove_kb)
           end
@@ -136,7 +136,7 @@ module BotCommand
             send_message("✅ Has creado el entrenamiento *#{title}*", "", 'Markdown')
             send_training_to_all_users(new_training)
           else
-            send_message("Formato de embarcación no válida")
+            send_message(I18n.t('manage_trainings.not_valid_format.boat'))
             user.reset_next_step
           end
           send_message('/start', set_remove_kb)
@@ -173,7 +173,7 @@ module BotCommand
             send_message("El entrenamiento no se ha podido eliminar")
           end
         else
-          send_message("Entrenamiento no encontrado")
+          send_message(I18n.t('manage_trainings.not_found'))
         end
         send_message('/start', set_remove_kb)
 
@@ -184,7 +184,7 @@ module BotCommand
           user.set_temporary_data('training_tmp', @training.id)
           user.set_next_step('edit_training/attributes')
           attributes = [["Fecha", "Hora"], ["Nivel", "Género"], ["Embarcación", "Cancelar"]]
-          send_message('Selecciona el dato que quieres editar', set_markup(attributes))
+          send_message(I18n.t('manage_trainings.select_edit_data'), set_markup(attributes))
         end
 
       when 'edit_training/attributes'
@@ -196,20 +196,20 @@ module BotCommand
           when "Fecha"
             user.set_next_step('edit_training/date')
             dates = generate_dates
-            send_message('Introduce el nuevo día del entrenamiento:', set_markup(dates))
+            send_message(I18n.t('manage_trainings.insert_new.date'), set_markup(dates))
           when "Hora"
             user.set_next_step('edit_training/hour')
             hours = [ "18:00", "18:30"], [ "19:00", "19:30"], ["20:00", "20:30"]
-            send_message('Introduce la nueva hora del entrenamiento:', set_markup(hours))
+            send_message(I18n.t('manage_trainings.insert_new.hour'), set_markup(hours))
           when "Nivel"
             user.set_next_step('edit_training/level')
-            send_message('Introduce el nuevo nivel del entrenamiento:', set_markup(LEVELS))
+            send_message(I18n.t('manage_trainings.insert_new.level'), set_markup(LEVELS))
           when "Género"
             user.set_next_step('edit_training/gender')
-            send_message('Introduce el nuevo género del entrenamiento:', set_markup(GENDERS))
+            send_message(I18n.t('manage_trainings.insert_new.gender'), set_markup(GENDERS))
           when "Embarcación"
             user.set_next_step('edit_training/boat')
-            send_message('Introduce la nueva embarcación del entrenamiento:', set_markup(GENDERS))
+            send_message(I18n.t('manage_trainings.insert_new.boat'), set_markup(GENDERS))
           when "Cancelar"
             user.reset_next_bot_command
             send_message('/start', set_remove_kb)
@@ -230,13 +230,13 @@ module BotCommand
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'date')
             else
-              send_message("No se pudo modificar la fecha del entrenamiento")
+              send_message(I18n.t('manage_trainings.not_modified.date'))
             end
           else
-            send_message("Formato de fecha no válido")
+            send_message(I18n.t('manage_trainings.not_valid_format.date'))
           end
         else
-          send_message("Entrenamiento no encontrado")
+          send_message(I18n.t('manage_trainings.not_found'))
         end
         send_message('/start', set_remove_kb)
 
@@ -253,13 +253,13 @@ module BotCommand
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'hour')
             else
-              send_message("No se pudo modificar la hora del entrenamiento")
+              send_message(I18n.t('manage_trainings.not_modified.hour'))
             end
           else
-            send_message("Formato de hora no válida")
+            send_message(I18n.t('manage_trainings.not_valid_format.hour'))
           end
         else
-          send_message("Entrenamiento no encontrado")
+          send_message(I18n.t('manage_trainings.not_found'))
         end
         send_message('/start', set_remove_kb)
 
@@ -276,13 +276,13 @@ module BotCommand
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'level')
             else
-              send_message("No se pudo modificar el nivel del entrenamiento")
+              send_message(I18n.t('manage_trainings.not_modified.level'))
             end
           else
-            send_message("Formato de nivel no válido")
+            send_message(I18n.t('manage_trainings.not_valid_format.level'))
           end
         else
-          send_message("Entrenamiento no encontrado")
+          send_message(I18n.t('manage_trainings.not_found'))
         end
         send_message('/start', set_remove_kb)
 
@@ -299,14 +299,14 @@ module BotCommand
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'gender')
             else
-              send_message("No se pudo modificar el nivel del entrenamiento")
+              send_message(I18n.t('manage_trainings.not_modified.gender'))
             end
 
           else
-            send_message("Formato de género no válido")
+            send_message(I18n.t('manage_trainings.not_valid_format.gender'))
           end
         else
-          send_message("Entrenamiento no encontrado")
+          send_message(I18n.t('manage_trainings.not_found'))
         end
         send_message('/start', set_remove_kb)
 
@@ -323,14 +323,14 @@ module BotCommand
               send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
               send_training_to_all_users(training, 'boat')
             else
-              send_message("No se pudo modificar el nivel del entrenamiento")
+              send_message(I18n.t('manage_trainings.not_modified.boat'))
             end
 
           else
-            send_message("Formato de género no válido")
+            send_message(I18n.t('manage_trainings.not_valid_format.boat'))
           end
         else
-          send_message("Entrenamiento no encontrado")
+          send_message(I18n.t('manage_trainings.not_found'))
         end
         send_message('/start', set_remove_kb)
 
