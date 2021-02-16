@@ -27,42 +27,42 @@ module BotCommand
     def start
       if user.username.nil?
         user.update_column(:username, from[:username]) if from[:username].present?
-        send_message('Por favor, añade tu *username* en la configuración de Telegram', nil, 'Markdown') if user.username.nil?
+        send_message(I18n.t('start.insert_username'), nil, 'Markdown') if user.username.nil?
       elsif user.gender.nil?
         user.set_next_step('gender')
         actions = ['Remera', 'Remero']
-        send_message('¿Eres remero o remera?:', set_markup(actions))
+        send_message(I18n.t('start.which_rower_gender'), set_markup(actions))
       elsif user.enabled?
         actions = ['/ver_entrenamientos', '/mis_entrenamientos'], ['/unirse_entrenamiento', '/salir_entrenamiento']
         actions.unshift(['/administrar_entrenamientos'], ['/administrar_socios']) if user.admin?
         user.reset_next_bot_command
-        send_message('Selecciona una opción:', set_markup(actions)) if text == '/start'
+        send_message(I18n.t('start.option_select'), set_markup(actions)) if text == '/start'
 
         case text
         when '/administrar_entrenamientos'
           actions = ['/crear_entrenamiento', '/editar_entrenamiento'], ['/ver_entrenamientos', '/borrar_entrenamiento']
-          send_message('Administrar entrenamientos:', set_markup(actions))
+          send_message(I18n.t('manage_trainings.manage_trainings'), set_markup(actions))
           user.set_next_bot_command('BotCommand::AdminManageTraining')
 
         when '/administrar_socios'
           actions = []
           actions << ['/activar_socios'] if (User.where(enabled: false).present? || User.where(level: nil).present?)
           actions << ['/desactivar_socios'] if User.where(enabled: true).present?
-          send_message('Opciones:', set_markup(actions))
+          send_message(I18n.t('start.options'), set_markup(actions))
           user.set_next_bot_command('BotCommand::AdminManageUser')
 
         when '/ver_entrenamientos'
           gender = user.gender == "female" ? "Femenino" : "Masculino"
           trainings = Training.joinable.where(level: user.level, gender: [gender, "Mixto"])
           if trainings.present?
-            send_message('Próximos entrenamientos:')
+            send_message(I18n.t('start.next_trainings'))
             trainings_text = []
             trainings.sort_by(&:date).each do |training|
               trainings_text << "▶️ *#{training.title}* - \[[#{training.users.size.to_s}/8\]]"
             end
             send_message(trainings_text.map(&:inspect).join("\n").tr('\"', ''), nil, 'Markdown')
           else
-            send_message('No hay entrenamientos')
+            send_message(I18n.t('start.not_trainings'))
           end
           send_message('/start', set_remove_kb)
 
@@ -74,11 +74,11 @@ module BotCommand
             user_trainings.sort_by(&:date).each do |training|
               trainings <<  "#{training.title} - [#{training.users.size.to_s}/8]"
             end
-            send_message("Selecciona el entrenamiento al que quieres unirte:", set_markup(trainings))
+            send_message(I18n.t('start.select_trainings.join'), set_markup(trainings))
             user.set_next_bot_command('BotCommand::UserManageTraining')
             user.set_next_step('join_training')
           else
-            send_message('No hay entrenamientos')
+            send_message(I18n.t('start.not_trainings'))
           end
 
         when '/salir_entrenamiento'
@@ -88,27 +88,27 @@ module BotCommand
             user_trainings.sort_by(&:date).each do |training|
               trainings <<  "#{training.title} - [#{training.users.size.to_s}/8]"
             end
-            send_message("Selecciona el entrenamiento del que quieres salir:", set_markup(trainings))
+            send_message(I18n.t('start.select_trainings.join'), set_markup(trainings))
             user.set_next_bot_command('BotCommand::UserManageTraining')
             user.set_next_step('exit_training')
           else
-            send_message('No hay entrenamientos')
+            send_message(I18n.t('start.not_trainings'))
           end
 
         when '/mis_entrenamientos'
           user.set_next_step('my_trainings')
           user_trainings = user.trainings.joinable.sort_by(&:date).map{|training| "▶️ #{training.title} - \[#{training.users.size.to_s}/8\]"}
           if user_trainings.present?
-            send_message('Selecciona qué entrenamiento quieres ver:', set_markup(user_trainings))
+            send_message(I18n.t('start.select_trainings.show'), set_markup(user_trainings))
             user.set_next_bot_command('BotCommand::UserManageTraining')
             user.set_next_step('list_my_trainings')
           else
-            send_message('No estás en ningún entrenamiento')
+            send_message(I18n.t('start.not_in_trainings'))
           end
         end
 
         else
-          send_message('Espera a que un entrenador active tu cuenta. ⏳')
+          send_message(I18n.t('start.wait_activation'))
       end
     end
 
@@ -124,7 +124,7 @@ module BotCommand
           if user.enabled?
             self.start
           else
-            send_message('Espera a que un entrenador active tu cuenta. ⏳') unless user.enabled?
+            send_message(I18n.t('start.wait_activation')) unless user.enabled?
             send_new_user_to_admins(user)
           end
           user.reset_step
@@ -134,7 +134,7 @@ module BotCommand
 
     def send_new_user_to_admins(rower)
       admins_telegram_ids = User.where(role: 'admin').pluck(:telegram_id)
-      message = "🔴 #{rower.username} (#{rower.first_name} #{rower.last_name}) está esperando a que le activen. Entra en /administrar_socios."
+      message = I18n.t('start.waiting_activation', username: rower.username, first_name: rower.first_name, last_name: rower.last_name)
       admins_telegram_ids.each do |telegram_id|
         @api.call('sendMessage', chat_id: telegram_id, text: message, reply_markup: nil, parse_mode: nil)
       end

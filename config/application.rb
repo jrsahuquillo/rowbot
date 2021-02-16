@@ -25,6 +25,7 @@ module Rowbot
     #     resource '*', headers: :any, methods: [:get, :post]
     #   end
     # end
+    config.i18n.default_locale = :es
     config.after_initialize do
       WebhooksController.new().main
     end
