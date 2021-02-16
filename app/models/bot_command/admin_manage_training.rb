@@ -321,7 +321,7 @@ module BotCommand
         user.reset_next_bot_command
         if training.present?
           if BOATS.flatten.include?(text)
-            training.gender = text
+            training.boat = text
             I18n.locale = :es
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, training.gender, text)
