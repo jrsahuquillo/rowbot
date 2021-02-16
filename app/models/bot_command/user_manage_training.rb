@@ -31,7 +31,7 @@ module BotCommand
           if training.present?
             user_training = UserTraining.new(user_id: user.id, training_id: training.id)
             if user_training.save
-              send_message("🚣🏻 Te has unido al entrenamiento *#{training.title}*", nil, 'Markdown')
+              send_message(I18n.t('manage_trainings.join.joined', title: training.title), nil, 'Markdown')
             elsif user_training.errors.full_messages == ["User has already been taken"]
               send_message(I18n.t('manage_trainings.join.already'))
             else
@@ -47,7 +47,7 @@ module BotCommand
             training = Training.find(training_id)
             user_training = UserTraining.new(user_id: user.id, training_id: training_id)
             if user_training.save
-              send_message("🚣🏻 Te has unido al entrenamiento *#{training.title}*", nil, 'Markdown')
+              send_message(I18n.t('manage_trainings.join.joined', title: training.title), nil, 'Markdown')
             elsif user_training.errors.full_messages == ["User has already been taken"]
               send_message(I18n.t('manage_trainings.join.already'))
             else
@@ -61,7 +61,7 @@ module BotCommand
           if training.present?
             user_training = UserTraining.find_by(user_id: user.id, training_id: training.id)
             if user_training.destroy
-              send_message("🥺 Has salido del entrenamiento *#{training.title}*", nil, 'Markdown')
+              send_message(I18n.t('manage_trainings.exit.left', title: training.title), nil, 'Markdown')
             else
               send_message(I18n.t('manage_trainings.exit.error'))
             end

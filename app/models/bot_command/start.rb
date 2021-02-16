@@ -134,7 +134,7 @@ module BotCommand
 
     def send_new_user_to_admins(rower)
       admins_telegram_ids = User.where(role: 'admin').pluck(:telegram_id)
-      message = "🔴 #{rower.username} (#{rower.first_name} #{rower.last_name}) está esperando a que le activen. Entra en /administrar_socios."
+      message = I18n.t('start.waiting_activation', username: rower.username, first_name: rower.first_name, last_name: rower.last_name)
       admins_telegram_ids.each do |telegram_id|
         @api.call('sendMessage', chat_id: telegram_id, text: message, reply_markup: nil, parse_mode: nil)
       end

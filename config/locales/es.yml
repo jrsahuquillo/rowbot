@@ -23,8 +23,12 @@ es:
       - nov
       - dic
   manage_trainings:
+    canceled: '❌ El entrenamiento *%{title}* ha sido cancelado'
+    created: '✅ Has creado el entrenamiento *%{title}*'
+    created_by: '✅ El entrenamiento:\n *%{title}* ha sido creado por @%{admin_username}.\n ¿Te apuntas?'
     exit:
       error: 'Ha habido algún error al tratar de salirte del entrenamiento. 🤷🏻‍♂️'
+      left: '🥺 Has salido del entrenamiento *%{title}*.'
     insert:
       boat: '🚣🏻‍♂️ Introduce la embarcación del entrenamiento:'
       hour: '🕑 Introduce la hora del entrenamiento (HH:MM):'
@@ -40,6 +44,7 @@ es:
     join:
       already: 'Ya te habías unido a este entrenamiento. 😝'
       error: 'Ha habido algún error al tratar de unirte al entrenamiento. 🤷🏻‍♂️'
+      joined: '🚣🏻 Te has unido al entrenamiento *%{title}*'
     manage_trainings: 'Administrar entrenamientos:'
     nobody_joined: 'Todavía no se ha unido nadie a este entrenamiento. 🤷🏻‍♂️'
     not_created_trainings: 'No hay entrenamientos creados. 🤷🏻‍♂️'
@@ -62,6 +67,8 @@ es:
       delete: 'Selecciona qué entrenamiento quieres eliminar:'
       edit: 'Selecciona qué entrenamiento quieres editar:'
       show: 'Selecciona qué entrenamiento quieres ver:'
+    updated: 'Entrenamiento *%{title}* actualizado'
+    updated_by: '⚠️ *%{text}* del entrenamiento:\n*%{title}*\nha sido actualizado por @%{admin_username}.'
   start:
     select_trainings:
       exit: 'Selecciona el entrenamiento del que quieres salir:'
@@ -75,6 +82,7 @@ es:
     option_select: 'Selecciona una opción:'
     which_rower_gender: '¿Eres remero o remera?:'
     wait_activation: 'Espera a que un entrenador active tu cuenta. ⏳'
+    waiting_activation: '%{username} (%{first_name} %{last_name}) está esperando a que le activen. Entra en /administrar_socios.'
   time:
     formats:
       long: '%A, %d/%B/%Y'

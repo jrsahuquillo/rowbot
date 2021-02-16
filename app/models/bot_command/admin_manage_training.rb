@@ -133,7 +133,7 @@ module BotCommand
             new_training = user.trainings.build(date: date, gender: gender, level: level, title: title, boat: boat, user_id: user.id)
             new_training.save
             user.reset_next_bot_command
-            send_message("✅ Has creado el entrenamiento *#{title}*", "", 'Markdown')
+            send_message(I18n.t('manage_trainings.created', title: title), "", 'Markdown')
             send_training_to_all_users(new_training)
           else
             send_message(I18n.t('manage_trainings.not_valid_format.boat'))
@@ -166,7 +166,7 @@ module BotCommand
         user.reset_next_bot_command
         if @training.present?
           if @training.destroy
-            message = "❌ El entrenamiento *#{@training.level} #{@training.gender} #{@training.date.strftime("%d/%m/%Y %H:%M")}* ha sido cancelado"
+            message = I18n.t('manage_trainings.canceled', title: @training.title)
             send_message(message, nil, 'Markdown')
             send_message_to_rowers(@training, message) if @training.users
           else
@@ -227,7 +227,7 @@ module BotCommand
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, training.gender, training.boat)
             if training.save
-              send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
+              send_message(I18n.t('manage_trainings.updated', title: training.title), nil, 'Markdown')
               send_training_to_all_users(training, 'date')
             else
               send_message(I18n.t('manage_trainings.not_modified.date'))
@@ -250,7 +250,7 @@ module BotCommand
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, training.gender, training.boat)
             if training.save
-              send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
+              send_message(I18n.t('manage_trainings.updated', title: training.title), nil, 'Markdown')
               send_training_to_all_users(training, 'hour')
             else
               send_message(I18n.t('manage_trainings.not_modified.hour'))
@@ -273,7 +273,7 @@ module BotCommand
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, training.gender, training.boat)
             if training.save
-              send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
+              send_message(I18n.t('manage_trainings.updated', title: training.title), nil, 'Markdown')
               send_training_to_all_users(training, 'level')
             else
               send_message(I18n.t('manage_trainings.not_modified.level'))
@@ -296,7 +296,7 @@ module BotCommand
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, text, training.boat)
             if training.save
-              send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
+              send_message(I18n.t('manage_trainings.updated', title: training.title), nil, 'Markdown')
               send_training_to_all_users(training, 'gender')
             else
               send_message(I18n.t('manage_trainings.not_modified.gender'))
@@ -320,7 +320,7 @@ module BotCommand
             formatted_date = I18n.l((training.date).to_time, format: :complete)
             training.title = set_title(formatted_date, training.level, training.gender, text)
             if training.save
-              send_message("Entrenamiento *#{training.title}* actualizado", nil, 'Markdown')
+              send_message(I18n.t('manage_trainings.updated', title: training.title), nil, 'Markdown')
               send_training_to_all_users(training, 'boat')
             else
               send_message(I18n.t('manage_trainings.not_modified.boat'))
@@ -362,11 +362,11 @@ module BotCommand
       if attribute
         markup = nil
         attribute_text = set_attribute_text(attribute)
-        "⚠️ *#{attribute_text}* del entrenamiento:\n*#{training.title}*\nha sido actualizado por @#{admin.username}."
+        I18n.t('manage_trainings.updated_by', text: attribute_text, title: training.title, admin_username: admin.username)
       else
         actions = ["¡Me apunto!"]
         markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
-        "✅ El entrenamiento:\n *#{training.title}* ha sido creado por @#{admin.username}.\n ¿Te apuntas?"
+        I18n.t('manage_trainings.created_by', title: training.title, admin_username: admin.username)
       end
       telegram_ids = User.enabled.pluck(:telegram_id) - [admin.telegram_id]
       telegram_ids.each do |telegram_id|
