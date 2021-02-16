@@ -36,7 +36,9 @@ module BotCommand
 
       when '/desactivar_socios'
         user.set_next_step('disable_users')
-        enabled_rowers = User.where(enabled: true).sort_by(&:created_at).map{|rower| "#{rower.username} (#{rower.first_name} #{rower.last_name})" }
+        enabled_rowers = User.where(enabled: true).reject{|u| u == user}
+                                                  .sort_by(&:created_at)
+                                                  .map{|rower| "#{rower.username} (#{rower.first_name} #{rower.last_name})" }
         send_message('Selecciona al socio/a que quieres desactivar:', set_markup(enabled_rowers))
       end
     end
