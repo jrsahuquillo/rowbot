@@ -26,8 +26,8 @@ module Rowbot
     #   end
     # end
     config.i18n.default_locale = :es
-    config.after_initialize do
-      WebhooksController.new().main
-    end
+    # config.after_initialize do
+    #   WebhooksController.new().main
+    # end
   end
 end
