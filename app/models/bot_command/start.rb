@@ -58,7 +58,7 @@ module BotCommand
             send_message(I18n.t('start.next_trainings'))
             trainings_text = []
             trainings.sort_by(&:date).each do |training|
-              trainings_text << "▶️ *#{training.title}* - \[[#{training.users.size.to_s}/8\]]"
+              trainings_text << "▶️ *#{training.title}* - \[[#{training.users.size.to_s}/#{training.capacity}\]]"
             end
             send_message(trainings_text.map(&:inspect).join("\n").tr('\"', ''), nil, 'Markdown')
           else
@@ -72,7 +72,7 @@ module BotCommand
           user_trainings = Training.joinable.where(level: user.level, gender: [gender, "Mixto"])
           if user_trainings.present?
             user_trainings.sort_by(&:date).each do |training|
-              trainings <<  "#{training.title} - [#{training.users.size.to_s}/8]"
+              trainings <<  "#{training.title} - [#{training.users.size.to_s}#{training.capacity}]"
             end
             send_message(I18n.t('start.select_trainings.join'), set_markup(trainings))
             user.set_next_bot_command('BotCommand::UserManageTraining')
@@ -86,7 +86,7 @@ module BotCommand
           user_trainings = user.trainings.joinable
           if user_trainings.present?
             user_trainings.sort_by(&:date).each do |training|
-              trainings <<  "#{training.title} - [#{training.users.size.to_s}/8]"
+              trainings <<  "#{training.title} - [#{training.users.size.to_s}/#{training.capacity}]"
             end
             send_message(I18n.t('start.select_trainings.join'), set_markup(trainings))
             user.set_next_bot_command('BotCommand::UserManageTraining')
@@ -97,7 +97,7 @@ module BotCommand
 
         when '/mis_entrenamientos'
           user.set_next_step('my_trainings')
-          user_trainings = user.trainings.joinable.sort_by(&:date).map{|training| "▶️ #{training.title} - \[#{training.users.size.to_s}/8\]"}
+          user_trainings = user.trainings.joinable.sort_by(&:date).map{|training| "▶️ #{training.title} - \[#{training.users.size.to_s}/#{training.capacity}\]"}
           if user_trainings.present?
             send_message(I18n.t('start.select_trainings.show'), set_markup(user_trainings))
             user.set_next_bot_command('BotCommand::UserManageTraining')
