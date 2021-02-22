@@ -3,6 +3,7 @@ module BotCommand
     def should_start?
       commands = [
                   '/start',
+                  '/help',
                   '/ver_entrenamientos',
                   '/unirse_entrenamiento',
                   '/salir_entrenamiento',
@@ -105,6 +106,11 @@ module BotCommand
           else
             send_message(I18n.t('start.not_in_trainings'))
           end
+
+        when '/help'
+          send_message(I18n.t('start.help'))
+          host = Rails.application.config.action_controller.default_url_options[:host]
+          @api.call('sendPhoto', chat_id: user.telegram_id, photo: "#{host}/assets/telegram_keyboard.jpg", reply_markup: nil, parse_mode: 'Markdown')
         end
 
         else

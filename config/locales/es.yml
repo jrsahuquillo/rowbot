@@ -70,16 +70,21 @@ es:
     updated: 'Entrenamiento *%{title}* actualizado'
     updated_by: '⚠️ *%{text}* del entrenamiento:\n*%{title}*\nha sido actualizado por @%{admin_username}.'
   start:
-    select_trainings:
-      exit: 'Selecciona el entrenamiento del que quieres salir:'
-      join: 'Selecciona el entrenamiento al que quieres unirte:'
-      show: 'Selecciona qué entrenamiento quieres ver:'
+    help: '- Para restaurar el bot, usa /start.  
+
+    - Si encuentras algún error o quieres proponer mejoras, escribe a @jrsahuquillo.  
+
+    - Si no ves las opciones, activa el teclado interactivo pulsando el icono indicado en la imagen.'
     insert_username: 'Por favor, añade tu *username* en la configuración de Telegram'
     next_trainings: 'Próximos entrenamientos:'
     not_trainings: 'No hay entrenamientos.'
     not_in_trainings: 'No estás en ningún entrenamiento.'
     options: 'Opciones:'
     option_select: 'Selecciona una opción:'
+    select_trainings:
+      exit: 'Selecciona el entrenamiento del que quieres salir:'
+      join: 'Selecciona el entrenamiento al que quieres unirte:'
+      show: 'Selecciona qué entrenamiento quieres ver:'
     which_rower_gender: '¿Eres remero o remera?:'
     wait_activation: 'Espera a que un entrenador active tu cuenta. ⏳'
     waiting_activation: '%{username} (%{first_name} %{last_name}) está esperando a que le activen. Entra en /administrar_socios.'
@@ -87,4 +92,4 @@ es:
     formats:
       long: '%A, %d/%B/%Y'
       complete: '%A, %d/%B/%Y a las %H:%M'
-  unknown_command: 'Comando desconocido. Usa /start para ver las opciones.'
+  unknown_command: 'Comando desconocido. Usa /start para ver las opciones o /help si necesitas ayuda.'
