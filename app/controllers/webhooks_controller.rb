@@ -1,4 +1,5 @@
 class WebhooksController < ApplicationController
+  http_basic_authenticate_with name: Rails.application.secrets[:http_name], password: Rails.application.secrets[:http_pass], only: :main
   helper_method :main
   skip_before_action :verify_authenticity_token
 
