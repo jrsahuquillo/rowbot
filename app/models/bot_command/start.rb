@@ -74,7 +74,7 @@ module BotCommand
           user_trainings = Training.joinable.where(level: user.level, gender: [gender, "Mixto"])
           if user_trainings.present?
             user_trainings.sort_by(&:date).each do |training|
-              trainings <<  "#{training.title} - [#{training.users.size.to_s}#{training.capacity}]"
+              trainings <<  "#{training.title} - [#{training.users.size.to_s}/#{training.capacity}]"
             end
             send_message(I18n.t('start.select_trainings.join'), set_markup(trainings))
             user.set_next_bot_command('BotCommand::UserManageTraining')
