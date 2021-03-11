@@ -35,6 +35,7 @@ module BotCommand
         send_message(I18n.t('start.which_rower_gender'), set_markup(actions))
       elsif user.enabled?
         actions = ['/ver_entrenamientos', '/mis_entrenamientos'], ['/unirse_entrenamiento', '/salir_entrenamiento']
+        actions.unshift(['/administrar_entrenamientos']) if user.trainer?
         actions.unshift(['/administrar_entrenamientos'], ['/administrar_socios']) if user.admin?
         user.reset_next_bot_command
         send_message(I18n.t('start.option_select'), set_markup(actions)) if text == '/start'
