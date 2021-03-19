@@ -43,6 +43,7 @@ es:
       level: '💪🏻 Introduce el nuevo nivel del entrenamiento:'
     join:
       already: 'Ya te habías unido a este entrenamiento. 😝'
+      dismiss: 'Bueno, otra vez será... 🥺'
       error: 'Ha habido algún error al tratar de unirte al entrenamiento. 🤷🏻‍♂️'
       joined: '🚣🏻 Te has unido al entrenamiento *%{title}*'
     manage_trainings: 'Administrar entrenamientos:'

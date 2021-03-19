@@ -53,6 +53,8 @@ module BotCommand
             else
               send_message(I18n.t('manage_trainings.join.error'))
             end
+          else
+            send_message(I18n.t('manage_trainings.join.dismiss'))
           end
 
         when 'exit_training'

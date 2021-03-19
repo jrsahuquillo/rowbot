@@ -364,7 +364,7 @@ module BotCommand
         attribute_text = set_attribute_text(attribute)
         I18n.t('manage_trainings.updated_by', text: attribute_text, title: training.title, admin_username: admin.username)
       else
-        actions = ["¡Me apunto!"]
+        actions = ["¡Me apunto!", "No puedo..."]
         markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
         I18n.t('manage_trainings.created_by', title: training.title, admin_username: admin.username)
       end
