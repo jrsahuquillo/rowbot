@@ -368,7 +368,8 @@ module BotCommand
         markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
         I18n.t('manage_trainings.created_by', title: training.title, admin_username: admin.username)
       end
-      telegram_ids = User.enabled.pluck(:telegram_id) - [admin.telegram_id]
+      telegram_ids = filter_users_ids(training) - [admin.telegram_id]
+      # telegram_ids = User.enabled.pluck(:telegram_id) - [admin.telegram_id]
       telegram_ids.each do |telegram_id|
         unless attribute
           rower = User.find_by(telegram_id: telegram_id)
@@ -403,6 +404,21 @@ module BotCommand
         "El nivel"
       when "boat"
         "La embarcación"
+      end
+    end
+
+    def filter_users_ids(training)
+      User.where(level: training.level, gender: user_gender_by_training(training)).pluck(:telegram_id)
+    end
+
+    def user_gender_by_training(training)
+      case training.gender
+      when "Masculino"
+        "male"
+      when "Femenino"
+        "female"
+      when "Mixto"
+        ["male", "female"]
       end
     end
   end
