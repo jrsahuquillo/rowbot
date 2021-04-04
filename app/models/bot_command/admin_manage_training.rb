@@ -412,7 +412,7 @@ module BotCommand
     end
 
     def filter_users_ids(training)
-      User.where(level: training.level, gender: user_gender_by_training(training)).pluck(:telegram_id)
+      User.enabled.where(level: training.level, gender: user_gender_by_training(training)).pluck(:telegram_id)
     end
 
     def user_gender_by_training(training)
