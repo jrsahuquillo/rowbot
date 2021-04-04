@@ -25,7 +25,7 @@ es:
   manage_trainings:
     canceled: '❌ El entrenamiento *%{title}* ha sido cancelado'
     created: '✅ Has creado el entrenamiento *%{title}*'
-    created_by: '✅ El entrenamiento:\n *%{title}* ha sido creado por @%{admin_username}.\n ¿Te apuntas?'
+    created_by: '✅ El entrenamiento: *%{title}* ha sido creado por @%{admin_username}. ¿Te apuntas?'
     exit:
       error: 'Ha habido algún error al tratar de salirte del entrenamiento. 🤷🏻‍♂️'
       left: '🥺 Has salido del entrenamiento *%{title}*.'

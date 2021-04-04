@@ -367,12 +367,10 @@ module BotCommand
         text = I18n.t('manage_trainings.created_by', title: training.title, admin_username: admin.username)
 
         kb = [
-          Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Me apunto', callback_data: training.id),
-          Telegram::Bot::Types::InlineKeyboardButton.new(text: 'No puedo', callback_data: false),
+          [Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Me apunto', callback_data: training.id),
+          Telegram::Bot::Types::InlineKeyboardButton.new(text: 'No puedo', callback_data: false)]
         ]
-        binding.pry
         markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
-        # bot.api.send_message(chat_id: message.chat.id, text: I18n.t('manage_trainings.created_by'), reply_markup: markup)
       end
       telegram_ids = filter_users_ids(training) - [admin.telegram_id]
       # telegram_ids = User.enabled.pluck(:telegram_id) - [admin.telegram_id]
