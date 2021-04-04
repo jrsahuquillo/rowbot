@@ -29,7 +29,8 @@ class WebhooksController < ApplicationController
   end
 
   def from
-    webhook[:message][:from]
+    return webhook[:message][:from] if webhook[:message]
+    return webhook[:callback_query][:from] if webhook[:callback_query]
   end
 
   def user
