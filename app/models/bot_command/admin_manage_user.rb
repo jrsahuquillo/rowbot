@@ -65,7 +65,7 @@ module BotCommand
           if LEVELS.flatten.include?(text)
             user.set_temporary_data('rower_level_tmp', text)
             user.set_next_step('set_users_role')
-            send_message("¿El remero es también entrenador? (Si lo activas como entrenador, podrá gestionar entrenamientos)", set_markup(ROLES))
+            send_message("¿El remero es también entrenador? (Si lo activas como entrenador, podrá gestionar entrenos)", set_markup(ROLES))
           else
             send_message("Formato de nivel no válido")
             user.reset_step
