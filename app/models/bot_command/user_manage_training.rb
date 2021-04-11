@@ -42,8 +42,8 @@ module BotCommand
           end
 
         when 'join_training/notice'
-          if text == '¡Me apunto!'
-            training_id = user.get_temporary_data('training_tmp')
+          if data.present?
+            training_id = data.to_i
             training = Training.find(training_id)
             user_training = UserTraining.new(user_id: user.id, training_id: training_id)
             if user_training.save

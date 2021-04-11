@@ -30,7 +30,11 @@ module BotCommand
     end
 
     def text
-      @message[:message][:text]
+      @message[:message][:text] rescue nil
+    end
+
+    def data
+      @message[:callback_query][:data] rescue nil
     end
 
     def from

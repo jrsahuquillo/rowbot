@@ -358,15 +358,19 @@ module BotCommand
 
     def send_training_to_all_users(training, attribute=nil)
       admin = training.user
-      text =
+
       if attribute
         markup = nil
         attribute_text = set_attribute_text(attribute)
-        I18n.t('manage_trainings.updated_by', text: attribute_text, title: training.title, admin_username: admin.username)
+        text = I18n.t('manage_trainings.updated_by', text: attribute_text, title: training.title, admin_username: admin.username)
       else
-        actions = ["¡Me apunto!", "No puedo..."]
-        markup = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: actions, one_time_keyboard: true, resize_keyboard: true)
-        I18n.t('manage_trainings.created_by', title: training.title, admin_username: admin.username)
+        text = I18n.t('manage_trainings.created_by', title: training.title, admin_username: admin.username)
+
+        kb = [
+          [Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Me apunto', callback_data: training.id),
+          Telegram::Bot::Types::InlineKeyboardButton.new(text: 'No puedo', callback_data: false)]
+        ]
+        markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
       end
       telegram_ids = filter_users_ids(training) - [admin.telegram_id]
       # telegram_ids = User.enabled.pluck(:telegram_id) - [admin.telegram_id]
@@ -408,7 +412,7 @@ module BotCommand
     end
 
     def filter_users_ids(training)
-      User.where(level: training.level, gender: user_gender_by_training(training)).pluck(:telegram_id)
+      User.enabled.where(level: training.level, gender: user_gender_by_training(training)).pluck(:telegram_id)
     end
 
     def user_gender_by_training(training)
