@@ -1,4 +1,11 @@
 es:
+  activerecord:
+    errors:
+      models:
+        user_training:
+          attributes:
+            user_id:
+              taken: 'has already been taken'
   date:
     day_names:
       - Domingo
