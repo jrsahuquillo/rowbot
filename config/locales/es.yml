@@ -30,12 +30,26 @@ es:
       - nov
       - dic
   manage_trainings:
-    canceled: '❌ El entreno *%{title}* ha sido cancelado'
-    created: '✅ Has creado el entreno *%{title}*'
-    created_by: '✅ El entreno: *%{title}* ha sido creado por @%{admin_username}. ¿Te apuntas?'
+    canceled: '❌ El entreno
+
+    *%{title}*
+
+    ha sido cancelado'
+    created: '✅ Has creado el entreno
+
+    *%{title}*'
+    created_by: '✅ El entreno:
+
+      *%{title}*
+
+      ha sido creado por @%{admin_username}.
+
+      ¿Te apuntas?'
     exit:
       error: 'Ha habido algún error al tratar de salirte del entreno. 🤷🏻‍♂️'
-      left: '🥺 Has salido del entreno *%{title}*.'
+      left: '🥺 Has salido del entreno
+
+      *%{title}*.'
     insert:
       boat: '🚣🏻‍♂️ Introduce la embarcación del entreno:'
       hour: '🕑 Introduce la hora del entreno (HH:MM):'
@@ -52,7 +66,9 @@ es:
       already: 'Ya te habías unido a este entreno. 😝'
       dismiss: 'Bueno, otra vez será... 🥺'
       error: 'Ha habido algún error al tratar de unirte al entreno. 🤷🏻‍♂️'
-      joined: '🚣🏻 Te has unido al entreno *%{title}*'
+      joined: '🚣🏻 Te has unido al entreno
+
+      *%{title}*'
     manage_trainings: 'Administrar entrenos:'
     nobody_joined: 'Todavía no se ha unido nadie a este entreno. 🤷🏻‍♂️'
     not_created_trainings: 'No hay entrenos creados. 🤷🏻‍♂️'
@@ -75,9 +91,20 @@ es:
       delete: 'Selecciona qué entreno quieres eliminar:'
       edit: 'Selecciona qué entreno quieres editar:'
       show: 'Selecciona qué entreno quieres ver:'
-    updated: 'entreno *%{title}* actualizado'
-    updated_by: '⚠️ *%{text}* del entreno:\n*%{title}*\nha sido actualizado por @%{admin_username}.'
+    updated: '☑️ Entreno
+
+    *%{title}*
+
+    actualizado'
+    updated_by: '⚠️ *%{text}* del entreno:
+
+      *%{title}*
+
+      ha sido actualizado por @%{admin_username}.'
   start:
+    bank_account: 'La cuenta bancaria del Club de Remo Ciudad de Valencia es:
+
+      *ES59 3159 0018 1626 4636 8429*'
     help: '- Para restaurar el bot, usa /start.  
 
     - Si encuentras algún error o quieres proponer mejoras, escribe a @jrsahuquillo.  

@@ -7,7 +7,8 @@ module BotCommand
                   '/ver_entrenos',
                   '/unirse_entreno',
                   '/salir_entreno',
-                  '/mis_entrenos'
+                  '/mis_entrenos',
+                  '/cuenta_banco'
                 ]
         commands << '/administrar_entrenos' if user.trainer? || user.admin?
         commands << '/administrar_socios' if user.admin?
@@ -112,6 +113,9 @@ module BotCommand
           send_message(I18n.t('start.help'))
           # host = Rails.application.config.action_controller.default_url_options[:host]
           # @api.call('sendPhoto', chat_id: user.telegram_id, photo: "#{host}/assets/telegram_keyboard.jpg", reply_markup: nil, parse_mode: 'Markdown')
+
+        when '/cuenta_banco'
+          send_message(I18n.t('start.bank_account'), nil, 'Markdown')
         end
 
         else

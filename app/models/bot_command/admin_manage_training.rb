@@ -209,7 +209,7 @@ module BotCommand
             send_message(I18n.t('manage_trainings.insert_new.gender'), set_markup(GENDERS))
           when "Embarcación"
             user.set_next_step('edit_training/boat')
-            send_message(I18n.t('manage_trainings.insert_new.boat'), set_markup(GENDERS))
+            send_message(I18n.t('manage_trainings.insert_new.boat'), set_markup(BOATS))
           when "Cancelar"
             user.reset_next_bot_command
             send_message('/start', set_remove_kb)
@@ -358,11 +358,9 @@ module BotCommand
 
     def send_training_to_all_users(training, attribute=nil)
       admin = training.user
-
       if attribute
         markup = nil
-        attribute_text = set_attribute_text(attribute)
-        text = I18n.t('manage_trainings.updated_by', text: attribute_text, title: training.title, admin_username: admin.username)
+        text = I18n.t('manage_trainings.updated_by', text: set_attribute_text(attribute), title: training.title, admin_username: admin.username)
       else
         text = I18n.t('manage_trainings.created_by', title: training.title, admin_username: admin.username)
 
@@ -373,7 +371,6 @@ module BotCommand
         markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
       end
       telegram_ids = filter_users_ids(training) - [admin.telegram_id]
-      # telegram_ids = User.enabled.pluck(:telegram_id) - [admin.telegram_id]
       telegram_ids.each do |telegram_id|
         unless attribute
           rower = User.find_by(telegram_id: telegram_id)
