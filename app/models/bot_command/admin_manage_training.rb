@@ -3,10 +3,10 @@ module BotCommand
 
     def should_start?
       [
-        '/crear_entrenamiento',
-        '/editar_entrenamiento',
-        '/ver_entrenamientos',
-        '/borrar_entrenamiento'
+        '/crear_entreno',
+        '/editar_entreno',
+        '/ver_entrenos',
+        '/borrar_entreno'
       ].include?(text)
     end
 
@@ -40,11 +40,11 @@ module BotCommand
     def start
       return send_message(I18n.t('start.wait_activation')) unless user.enabled?
       case text
-      when '/crear_entrenamiento'
+      when '/crear_entreno'
         user.set_next_step('create_training/date')
         send_message(I18n.t('manage_trainings.insert.date'), set_markup(generate_dates))
 
-      when '/ver_entrenamientos'
+      when '/ver_entrenos'
         user.set_next_step('list_trainings')
         set_trainings
         if @trainings.present?
@@ -53,7 +53,7 @@ module BotCommand
           send_message(I18n.t('manage_trainings.not_created_trainings'))
         end
 
-      when '/borrar_entrenamiento'
+      when '/borrar_entreno'
         user.set_next_step('delete_training')
         set_trainings
         if @trainings.present?
@@ -62,7 +62,7 @@ module BotCommand
           send_message(I18n.t('manage_trainings.not_created_trainings'))
         end
 
-      when '/editar_entrenamiento'
+      when '/editar_entreno'
         user.set_next_step('edit_training')
         set_trainings
         if @trainings.present?
