@@ -110,7 +110,7 @@ es:
     - Si encuentras algún error o quieres proponer mejoras, escribe a @jrsahuquillo.  
 
     - Si no ves las opciones, activa el teclado interactivo pulsando el icono ubicado en el espacio para escribir mensajes.'
-    insert_username: 'Por favor, añade tu *username* en la configuración de Telegram'
+    insert_username: 'Por favor, añade tu *username* en la configuración de Telegram. Después, vuelve a entrar en RowBot y usa el comando /start.'
     next_trainings: 'Próximos entrenos:'
     not_trainings: 'No hay entrenos.'
     not_in_trainings: 'No estás en ningún entreno.'
@@ -121,7 +121,7 @@ es:
       join: 'Selecciona el entreno al que quieres unirte:'
       show: 'Selecciona qué entreno quieres ver:'
     which_rower_gender: '¿Eres remero o remera?:'
-    wait_activation: 'Espera a que un entrenador active tu cuenta. ⏳'
+    wait_activation: 'Espera a que un entrenador o administrador active tu cuenta. ⏳'
     waiting_activation: '%{username} (%{first_name} %{last_name}) está esperando a que le activen. Entra en /administrar_socios.'
   time:
     formats:
