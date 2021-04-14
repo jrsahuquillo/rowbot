@@ -86,7 +86,7 @@ module BotCommand
         if text =~ /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
           hour = text
           date = user.get_temporary_data('date_tmp')
-          user.set_temporary_data('full_date_tmp', DateTime.parse("#{date} #{hour}") )
+          user.set_temporary_data('full_date_tmp', DateTime.parse("#{hour} #{date}") )
           send_message(I18n.t('manage_trainings.insert.level'), set_markup(LEVELS))
         else
           send_message(I18n.t('manage_trainings.not_valid_format.hour'))
