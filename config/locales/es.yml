@@ -102,9 +102,8 @@ es:
 
       ha sido actualizado por @%{admin_username}.'
   start:
-    bank_account: 'La cuenta bancaria del Club de Remo Ciudad de Valencia es:
-
-      *ES59 3159 0018 1626 4636 8429*'
+    bank_account_text: '🏦 La cuenta bancaria del *Club de Remo Ciudad de Valencia* es:'
+    bank_account_iban: '*ES59 3159 0018 1626 4636 8429*'
     help: '- Para restaurar el bot, usa /start.  
 
     - Si encuentras algún error o quieres proponer mejoras, escribe a @jrsahuquillo.  
