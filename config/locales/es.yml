@@ -115,11 +115,14 @@ es:
     not_trainings: 'No hay entrenos.'
     not_in_trainings: 'No estás en ningún entreno.'
     options: 'Opciones:'
-    option_select: 'Selecciona una opción:'
+    option_select: '🚧 RowBot en pruebas 🚧
+
+    Selecciona una opción:'
     select_trainings:
       exit: 'Selecciona el entreno del que quieres salir:'
       join: 'Selecciona el entreno al que quieres unirte:'
       show: 'Selecciona qué entreno quieres ver:'
+    start: '/start'
     which_rower_gender: '¿Eres remero o remera?:'
     wait_activation: 'Espera a que un entrenador o administrador active tu cuenta. ⏳'
     waiting_activation: '%{username} (%{first_name} %{last_name}) está esperando a que le activen. Entra en /administrar_socios.'

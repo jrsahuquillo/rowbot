@@ -55,7 +55,7 @@ module BotCommand
           send_message("Indica el nivel #{rower_text}", set_markup(LEVELS))
         else
           send_message("El usuario no ha sido localizado")
-          send_message('/start', set_remove_kb)
+          send_message(I18n.t('start.start'), set_remove_kb)
         end
 
       when 'set_users_level'
@@ -69,11 +69,11 @@ module BotCommand
           else
             send_message("Formato de nivel no válido")
             user.reset_step
-            send_message('/start', set_remove_kb)
+            send_message(I18n.t('start.start'), set_remove_kb)
           end
         else
           send_message("El usuario no ha sido localizado")
-          send_message('/start', set_remove_kb)
+          send_message(I18n.t('start.start'), set_remove_kb)
         end
 
       when 'set_users_role'
@@ -96,7 +96,7 @@ module BotCommand
         else
           send_message("El usuario no ha sido localizado")
         end
-        send_message('/start', set_remove_kb)
+        send_message(I18n.t('start.start'), set_remove_kb)
 
       when 'disable_users'
         rower = User.find_by(username: text.split(' ').first)
@@ -110,7 +110,7 @@ module BotCommand
         else
           send_message("El usuario no ha sido localizado")
         end
-        send_message('/start', set_remove_kb)
+        send_message(I18n.t('start.start'), set_remove_kb)
 
       end
     end

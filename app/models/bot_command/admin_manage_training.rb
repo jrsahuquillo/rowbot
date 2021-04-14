@@ -91,7 +91,7 @@ module BotCommand
         else
           send_message(I18n.t('manage_trainings.not_valid_format.hour'))
           user.reset_step
-          send_message('/start', set_remove_kb)
+          send_message(I18n.t('start.start'), set_remove_kb)
         end
         
       when 'create_training/level'
@@ -103,7 +103,7 @@ module BotCommand
           else
             send_message(I18n.t('manage_trainings.not_valid_format.level'))
             user.reset_step
-            send_message('/start', set_remove_kb)
+            send_message(I18n.t('start.start'), set_remove_kb)
           end
         end
 
@@ -116,7 +116,7 @@ module BotCommand
           else
             send_message(I18n.t('manage_trainings.not_valid_format.gender'))
             user.reset_step
-            send_message('/start', set_remove_kb)
+            send_message(I18n.t('start.start'), set_remove_kb)
           end
         end
 
@@ -139,7 +139,7 @@ module BotCommand
             send_message(I18n.t('manage_trainings.not_valid_format.boat'))
             user.reset_next_step
           end
-          send_message('/start', set_remove_kb)
+          send_message(I18n.t('start.start'), set_remove_kb)
         end
 
       when 'list_trainings'
@@ -158,7 +158,7 @@ module BotCommand
             end
             send_message(rowers_text.map(&:inspect).join("\n").tr('\"', ''))
           end
-          send_message('/start', set_remove_kb)
+          send_message(I18n.t('start.start'), set_remove_kb)
         end
 
       when 'delete_training'
@@ -175,7 +175,7 @@ module BotCommand
         else
           send_message(I18n.t('manage_trainings.not_found'))
         end
-        send_message('/start', set_remove_kb)
+        send_message(I18n.t('start.start'), set_remove_kb)
 
       when 'edit_training'
         set_training(text)
@@ -212,7 +212,7 @@ module BotCommand
             send_message(I18n.t('manage_trainings.insert_new.boat'), set_markup(BOATS))
           when "Cancelar"
             user.reset_next_bot_command
-            send_message('/start', set_remove_kb)
+            send_message(I18n.t('start.start'), set_remove_kb)
           end
         end
 
@@ -238,7 +238,7 @@ module BotCommand
         else
           send_message(I18n.t('manage_trainings.not_found'))
         end
-        send_message('/start', set_remove_kb)
+        send_message(I18n.t('start.start'), set_remove_kb)
 
       when 'edit_training/hour'
         training_id = user.get_temporary_data('training_tmp')
@@ -261,7 +261,7 @@ module BotCommand
         else
           send_message(I18n.t('manage_trainings.not_found'))
         end
-        send_message('/start', set_remove_kb)
+        send_message(I18n.t('start.start'), set_remove_kb)
 
       when 'edit_training/level'
         training_id = user.get_temporary_data('training_tmp')
@@ -284,7 +284,7 @@ module BotCommand
         else
           send_message(I18n.t('manage_trainings.not_found'))
         end
-        send_message('/start', set_remove_kb)
+        send_message(I18n.t('start.start'), set_remove_kb)
 
       when 'edit_training/gender'
         training_id = user.get_temporary_data('training_tmp')
@@ -308,7 +308,7 @@ module BotCommand
         else
           send_message(I18n.t('manage_trainings.not_found'))
         end
-        send_message('/start', set_remove_kb)
+        send_message(I18n.t('start.start'), set_remove_kb)
 
       when 'edit_training/boat'
         training_id = user.get_temporary_data('training_tmp')
@@ -332,7 +332,7 @@ module BotCommand
         else
           send_message(I18n.t('manage_trainings.not_found'))
         end
-        send_message('/start', set_remove_kb)
+        send_message(I18n.t('start.start'), set_remove_kb)
 
       end
 

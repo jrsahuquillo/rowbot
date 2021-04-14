@@ -93,7 +93,7 @@ module BotCommand
         send_message(I18n.t('start.wait_activation'))
       end
 
-      send_message('/start', set_remove_kb)
+      send_message(I18n.t('start.start'), set_remove_kb)
       user.reset_next_bot_command
     end
   end

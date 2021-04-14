@@ -67,7 +67,7 @@ module BotCommand
           else
             send_message(I18n.t('start.not_trainings'))
           end
-          send_message('/start', set_remove_kb)
+          send_message(I18n.t('start.start'), set_remove_kb)
 
         when '/unirse_entreno'
           gender = user.gender == "female" ? "Femenino" : "Masculino"
