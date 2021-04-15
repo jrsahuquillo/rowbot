@@ -221,7 +221,7 @@ module BotCommand
         training = Training.find(training_id)
         user.reset_next_bot_command
         if training.present?
-          new_date = text.to_datetime rescue nil
+          new_date = text.split(",").last.strip.to_datetime rescue nil
           if new_date
             training.date = training.date.change(year: new_date.year, month: new_date.month, day: new_date.day)
             formatted_date = I18n.l((training.date).to_time, format: :complete)
