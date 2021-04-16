@@ -32,7 +32,7 @@ gem 'pry'
 gem 'amazing_print'
 gem 'unicorn'
 gem 'rake'
-gem 'yarn'
+# gem 'yarn'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

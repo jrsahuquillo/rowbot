@@ -111,8 +111,8 @@ module BotCommand
 
         when '/help'
           send_message(I18n.t('start.help'))
-          # host = Rails.application.config.action_controller.default_url_options[:host]
-          # @api.call('sendPhoto', chat_id: user.telegram_id, photo: "#{host}/assets/telegram_keyboard.jpg", reply_markup: nil, parse_mode: 'Markdown')
+          host = Rails.application.config.action_controller.default_url_options[:host]
+          @api.call('sendPhoto', chat_id: user.telegram_id, photo: "#{host}/assets/telegram_keyboard.jpg", reply_markup: nil, parse_mode: 'Markdown')
 
         when '/cuenta_banco'
           send_message(I18n.t('start.bank_account_text'), nil, 'Markdown')
